@@ -571,6 +571,28 @@ app.post('/api/send', async (req, res) => {
   }
 });
 
+app.post('/api/simulate-incoming', (req, res) => {
+  const { jid, text, sender } = req.body || {};
+  const targetJid = jid || (chatsMap.size > 0 ? Array.from(chatsMap.keys())[0] : null);
+  if (!targetJid) return res.status(400).json({ error: 'No chats available' });
+  const timestamp = Date.now();
+  const id = 'sim_' + timestamp;
+  const msgText = text || 'WhatsBB incoming message test';
+  const msgSender = sender || 'Bridge';
+  const msgObj = { id, fromMe: false, text: msgText, timestamp, sender: msgSender };
+  upsertMsg(targetJid, msgObj);
+  const cur = chatsMap.get(targetJid)?.unread || 0;
+  upsertChat(targetJid, {
+    lastMessage: msgText,
+    timestamp,
+    unread: cur + 1
+  });
+  saveStore();
+  broadcastSSE('new_message', { jid: targetJid, message: msgObj });
+  console.log(`[WhatsBB] Injected incoming unread message to ${targetJid}: "${msgText}"`);
+  res.json({ success: true, jid: targetJid, unread: cur + 1, message: msgObj });
+});
+
 // Request older history from primary phone on demand
 app.post('/api/messages/fetch-history', async (req, res) => {
   const { jid, count } = req.body;
