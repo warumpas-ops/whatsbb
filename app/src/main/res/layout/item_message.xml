@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Real WhatsApp message bubble item -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp">
 
-    <!-- Incoming Container (Left-aligned) -->
+    <!-- INCOMING bubble (left-aligned) -->
     <LinearLayout
         android:id="@+id/layout_bubble_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:maxWidth="280dp"
-        android:layout_marginRight="40dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="64dp"
         android:orientation="vertical"
         android:background="@drawable/bubble_incoming"
         android:visibility="gone">
@@ -20,7 +23,7 @@
             android:id="@+id/tv_sender_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#53bdeb"
+            android:textColor="@color/wa_link"
             android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone" />
@@ -29,64 +32,63 @@
             android:id="@+id/tv_text_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/bb_text_primary"
+            android:textColor="@color/wa_text"
             android:textSize="15sp"
-            android:text="Incoming message text" />
+            android:lineSpacingExtra="1dp" />
 
         <TextView
             android:id="@+id/tv_time_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginTop="2dp"
-            android:textColor="@color/bb_text_time"
-            android:textSize="10sp"
-            android:text="12:00" />
+            android:paddingTop="1dp"
+            android:textColor="@color/wa_text_meta"
+            android:textSize="11sp" />
     </LinearLayout>
 
-    <!-- Outgoing Container (Right-aligned) -->
+    <!-- OUTGOING bubble (right-aligned) -->
     <LinearLayout
         android:id="@+id/layout_bubble_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:maxWidth="280dp"
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="4dp"
         android:orientation="vertical"
         android:background="@drawable/bubble_outgoing"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_text_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/bb_text_primary"
+            android:textColor="@color/wa_text"
             android:textSize="15sp"
-            android:text="Outgoing message text" />
+            android:lineSpacingExtra="1dp" />
 
+        <!-- Time + tick row -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:layout_marginTop="2dp"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="1dp">
 
             <TextView
                 android:id="@+id/tv_time_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/bb_text_time"
-                android:textSize="10sp"
-                android:text="12:01" />
+                android:textColor="@color/wa_text_meta"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/tv_status_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
-                android:textColor="#53bdeb"
-                android:textSize="11sp"
+                android:textColor="#53BDEB"
+                android:textSize="12sp"
                 android:text="&#10003;&#10003;" />
         </LinearLayout>
     </LinearLayout>

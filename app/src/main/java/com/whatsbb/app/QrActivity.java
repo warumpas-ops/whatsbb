@@ -36,17 +36,11 @@ public class QrActivity extends Activity {
         tvQrStatus = (TextView) findViewById(R.id.tv_qr_status);
 
         findViewById(R.id.btn_qr_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
+            @Override public void onClick(View v) { finish(); }
         });
 
         findViewById(R.id.btn_qr_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fetchQrCode();
-            }
+            @Override public void onClick(View v) { fetchQrCode(); }
         });
 
         pollRunnable = new Runnable() {
@@ -77,21 +71,18 @@ public class QrActivity extends Activity {
         pollHandler.removeCallbacks(pollRunnable);
     }
 
-    private void fetchQrCode() {
-        new LoadQrTask().execute();
-    }
+    private void fetchQrCode() { new LoadQrTask().execute(); }
 
     private class LoadQrTask extends AsyncTask<Void, Void, QrResult> {
         @Override
-        protected QrResult doInBackground(Void... params) {
+        protected QrResult doInBackground(Void... p) {
             QrResult res = new QrResult();
             try {
                 JSONObject json = ApiClient.getQR(prefs.getServerUrl());
                 res.status = json.optString("status");
                 String qrDataUrl = json.optString("qr", null);
                 if (qrDataUrl != null && qrDataUrl.contains(",")) {
-                    String base64 = qrDataUrl.substring(qrDataUrl.indexOf(",") + 1);
-                    byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                    byte[] bytes = Base64.decode(qrDataUrl.substring(qrDataUrl.indexOf(",") + 1), Base64.DEFAULT);
                     res.bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 }
                 res.success = true;
@@ -103,39 +94,35 @@ public class QrActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(QrResult result) {
+        protected void onPostExecute(QrResult r) {
             progressQr.setVisibility(View.GONE);
 
-            if (!result.success) {
-                tvQrStatus.setText("Cannot connect to bridge:\n" + result.error);
+            if (!r.success) {
+                tvQrStatus.setText("Cannot reach bridge:\n" + r.error);
                 return;
             }
 
-            if ("CONNECTED".equals(result.status)) {
+            if ("CONNECTED".equals(r.status)) {
                 tvQrStatus.setText("\u2713 WhatsApp Connected!");
                 Toast.makeText(QrActivity.this, "Device linked successfully!", Toast.LENGTH_SHORT).show();
                 pollHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        finish();
-                    }
+                    @Override public void run() { finish(); }
                 }, 1200);
                 return;
             }
 
-            if (result.bitmap != null) {
-                imgQr.setImageBitmap(result.bitmap);
-                tvQrStatus.setText("Point your WhatsApp camera at the screen");
+            if (r.bitmap != null) {
+                imgQr.setImageBitmap(r.bitmap);
+                tvQrStatus.setText("Point your phone camera at the screen");
             } else {
-                tvQrStatus.setText("Generating QR code... Please wait.");
+                tvQrStatus.setText("Generating QR code...");
             }
         }
     }
 
     private static class QrResult {
         boolean success;
-        String status;
-        String error;
+        String status, error;
         Bitmap bitmap;
     }
 }

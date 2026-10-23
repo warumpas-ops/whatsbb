@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -44,16 +43,19 @@ public class MainActivity extends Activity {
     private View viewStatusDot;
     private LinearLayout layoutStatusBanner;
     private TextView tvStatusBanner;
-    private Button btnBannerAction;
+    private TextView btnBannerAction;
+    private View bannerDot;
 
     private Handler autoRefreshHandler = new Handler();
     private Runnable autoRefreshRunnable;
     private boolean isPaused = false;
     private String currentStatus = "DISCONNECTED";
 
+    // Real WhatsApp avatar color palette
     private static final int[] AVATAR_COLORS = {
-        0xFF1E88E5, 0xFF43A047, 0xFFE53935, 0xFFFB8C00,
-        0xFF8E24AA, 0xFF00ACC1, 0xFF3949AB, 0xFFD81B60
+        0xFFE53935, 0xFF8E24AA, 0xFF1E88E5, 0xFF00897B,
+        0xFF43A047, 0xFFFB8C00, 0xFF6D4C41, 0xFF3949AB,
+        0xFF00ACC1, 0xFFD81B60, 0xFF7B1FA2, 0xFF0288D1
     };
 
     @Override
@@ -69,7 +71,8 @@ public class MainActivity extends Activity {
         viewStatusDot = findViewById(R.id.view_status_dot);
         layoutStatusBanner = (LinearLayout) findViewById(R.id.layout_status_banner);
         tvStatusBanner = (TextView) findViewById(R.id.tv_status_banner);
-        btnBannerAction = (Button) findViewById(R.id.btn_banner_action);
+        btnBannerAction = (TextView) findViewById(R.id.btn_banner_action);
+        bannerDot = findViewById(R.id.banner_dot);
 
         adapter = new ChatAdapter(this, chatList);
         listChats.setAdapter(adapter);
@@ -77,16 +80,16 @@ public class MainActivity extends Activity {
         listChats.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ChatModel chat = chatList.get(position);
-                openChat(chat.getId(), chat.getName());
+                if (position < chatList.size()) {
+                    ChatModel chat = chatList.get(position);
+                    openChat(chat.getId(), chat.getName());
+                }
             }
         });
 
         findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                refreshData(true);
-            }
+            public void onClick(View v) { refreshData(true); }
         });
 
         findViewById(R.id.btn_settings).setOnClickListener(new View.OnClickListener() {
@@ -98,9 +101,7 @@ public class MainActivity extends Activity {
 
         findViewById(R.id.btn_new_chat).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                showNewChatDialog();
-            }
+            public void onClick(View v) { showNewChatDialog(); }
         });
 
         btnBannerAction.setOnClickListener(new View.OnClickListener() {
@@ -149,25 +150,22 @@ public class MainActivity extends Activity {
 
     private void showNewChatDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New Conversation");
-        builder.setMessage("Enter phone number with country code (e.g. +14155552671):");
-
+        builder.setTitle("New Chat");
+        builder.setMessage("Enter phone number with country code (e.g. 447700900000):");
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_PHONE);
-        input.setHint("+1234567890");
+        input.setHint("+447700900000");
         input.setTextColor(Color.WHITE);
         builder.setView(input);
-
-        builder.setPositiveButton("Open Chat", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String phone = input.getText().toString().trim().replaceAll("[^0-9]", "");
                 if (phone.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Enter a valid phone number", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                String jid = phone + "@s.whatsapp.net";
-                openChat(jid, "+" + phone);
+                openChat(phone + "@s.whatsapp.net", "+" + phone);
             }
         });
         builder.setNegativeButton("Cancel", null);
@@ -184,12 +182,11 @@ public class MainActivity extends Activity {
     private class LoadChatsTask extends AsyncTask<Void, Void, LoadResult> {
         @Override
         protected LoadResult doInBackground(Void... params) {
-            String url = prefs.getServerUrl();
             LoadResult result = new LoadResult();
             try {
-                JSONObject statusJson = ApiClient.getStatus(url);
+                JSONObject statusJson = ApiClient.getStatus(prefs.getServerUrl());
                 result.status = statusJson.optString("status", "DISCONNECTED");
-                result.chats = ApiClient.getChats(url);
+                result.chats = ApiClient.getChats(prefs.getServerUrl());
                 result.success = true;
             } catch (Exception e) {
                 result.success = false;
@@ -210,12 +207,7 @@ public class MainActivity extends Activity {
                 chatList.addAll(result.chats);
                 adapter.notifyDataSetChanged();
             }
-
-            if (chatList.isEmpty()) {
-                tvEmpty.setVisibility(View.VISIBLE);
-            } else {
-                tvEmpty.setVisibility(View.GONE);
-            }
+            tvEmpty.setVisibility(chatList.isEmpty() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -223,24 +215,33 @@ public class MainActivity extends Activity {
         GradientDrawable dotBg = new GradientDrawable();
         dotBg.setShape(GradientDrawable.OVAL);
 
+        GradientDrawable bannerDotBg = new GradientDrawable();
+        bannerDotBg.setShape(GradientDrawable.OVAL);
+
         if ("CONNECTED".equals(status)) {
-            dotBg.setColor(0xFF25D366); // Green
+            dotBg.setColor(0xFF00A884);
             layoutStatusBanner.setVisibility(View.GONE);
         } else if ("SCAN_QR".equals(status)) {
-            dotBg.setColor(0xFFFFAA00); // Amber
+            dotBg.setColor(0xFFF0B429);
+            bannerDotBg.setColor(0xFFF0B429);
+            bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
-            tvStatusBanner.setText("WhatsApp needs pairing. Tap to scan QR.");
-            btnBannerAction.setText("Scan QR");
+            tvStatusBanner.setText("Scan QR code to link WhatsApp");
+            btnBannerAction.setText("PAIR");
         } else if ("CONNECTING".equals(status)) {
-            dotBg.setColor(0xFF3B82F6); // Blue
+            dotBg.setColor(0xFF3B82F6);
+            bannerDotBg.setColor(0xFF3B82F6);
+            bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
-            tvStatusBanner.setText("Connecting to WhatsApp bridge...");
-            btnBannerAction.setText("Settings");
+            tvStatusBanner.setText("Connecting to bridge...");
+            btnBannerAction.setText("SETTINGS");
         } else {
-            dotBg.setColor(0xFFEF4444); // Red
+            dotBg.setColor(0xFFEF4444);
+            bannerDotBg.setColor(0xFFEF4444);
+            bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
-            tvStatusBanner.setText(error != null ? "Bridge error: " + error : "Disconnected from bridge.");
-            btnBannerAction.setText("Settings");
+            tvStatusBanner.setText(error != null ? "Bridge unreachable — " + error.split(":")[0] : "Not connected to bridge");
+            btnBannerAction.setText("SETTINGS");
         }
         viewStatusDot.setBackgroundDrawable(dotBg);
     }
@@ -252,133 +253,107 @@ public class MainActivity extends Activity {
         List<ChatModel> chats;
     }
 
-    // Physical BlackBerry Keyboard Navigation
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
-            case KeyEvent.KEYCODE_T: // Jump to top
-                if (chatList.size() > 0) {
-                    listChats.setSelection(0);
-                    return true;
-                }
+            case KeyEvent.KEYCODE_T:
+                if (!chatList.isEmpty()) { listChats.setSelection(0); return true; }
                 break;
-            case KeyEvent.KEYCODE_B: // Jump to bottom
-                if (chatList.size() > 0) {
-                    listChats.setSelection(chatList.size() - 1);
-                    return true;
-                }
+            case KeyEvent.KEYCODE_B:
+                if (!chatList.isEmpty()) { listChats.setSelection(chatList.size() - 1); return true; }
                 break;
-            case KeyEvent.KEYCODE_R: // Refresh
+            case KeyEvent.KEYCODE_R:
                 refreshData(true);
-                Toast.makeText(this, "Refreshed", Toast.LENGTH_SHORT).show();
                 return true;
-            case KeyEvent.KEYCODE_S: // Settings
+            case KeyEvent.KEYCODE_S:
                 startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 return true;
-            case KeyEvent.KEYCODE_N: // New Chat
+            case KeyEvent.KEYCODE_N:
                 showNewChatDialog();
                 return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
-    private static class ChatAdapter extends BaseAdapter {
+    private class ChatAdapter extends BaseAdapter {
         private final Context context;
         private final List<ChatModel> items;
         private final LayoutInflater inflater;
-        private final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d", Locale.getDefault());
+        private final SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM", Locale.getDefault());
 
-        public ChatAdapter(Context context, List<ChatModel> items) {
+        ChatAdapter(Context context, List<ChatModel> items) {
             this.context = context;
             this.items = items;
             this.inflater = LayoutInflater.from(context);
         }
 
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
+        @Override public int getCount() { return items.size(); }
+        @Override public Object getItem(int p) { return items.get(p); }
+        @Override public long getItemId(int p) { return p; }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder;
+            ViewHolder h;
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.item_chat, parent, false);
-                holder = new ViewHolder();
-                holder.layoutAvatar = (FrameLayout) convertView.findViewById(R.id.layout_avatar);
-                holder.tvAvatarLetter = (TextView) convertView.findViewById(R.id.tv_avatar_letter);
-                holder.tvChatName = (TextView) convertView.findViewById(R.id.tv_chat_name);
-                holder.tvChatTime = (TextView) convertView.findViewById(R.id.tv_chat_time);
-                holder.tvChatLastMsg = (TextView) convertView.findViewById(R.id.tv_chat_last_msg);
-                holder.tvUnreadBadge = (TextView) convertView.findViewById(R.id.tv_unread_badge);
-                convertView.setTag(holder);
+                h = new ViewHolder();
+                h.layoutAvatar = (FrameLayout) convertView.findViewById(R.id.layout_avatar);
+                h.tvAvatarLetter = (TextView) convertView.findViewById(R.id.tv_avatar_letter);
+                h.tvName = (TextView) convertView.findViewById(R.id.tv_chat_name);
+                h.tvTime = (TextView) convertView.findViewById(R.id.tv_chat_time);
+                h.tvLastMsg = (TextView) convertView.findViewById(R.id.tv_chat_last_msg);
+                h.tvBadge = (TextView) convertView.findViewById(R.id.tv_unread_badge);
+                convertView.setTag(h);
             } else {
-                holder = (ViewHolder) convertView.getTag();
+                h = (ViewHolder) convertView.getTag();
             }
 
             ChatModel chat = items.get(position);
 
-            // Name & Avatar
-            String displayName = chat.getName();
-            holder.tvChatName.setText(displayName);
+            // Avatar
+            String name = chat.getName();
+            String letter = (name != null && !name.isEmpty()) ? name.substring(0, 1).toUpperCase(Locale.getDefault()) : "?";
+            h.tvAvatarLetter.setText(letter);
+            int colorIdx = Math.abs(chat.getId().hashCode()) % AVATAR_COLORS.length;
+            GradientDrawable bg = new GradientDrawable();
+            bg.setShape(GradientDrawable.OVAL);
+            bg.setColor(AVATAR_COLORS[colorIdx]);
+            h.layoutAvatar.setBackgroundDrawable(bg);
 
-            String firstLetter = "?";
-            if (displayName != null && !displayName.isEmpty()) {
-                firstLetter = displayName.substring(0, 1).toUpperCase(Locale.getDefault());
-            }
-            holder.tvAvatarLetter.setText(firstLetter);
+            // Name
+            h.tvName.setText(name);
 
-            int colorIndex = Math.abs(chat.getId().hashCode()) % AVATAR_COLORS.length;
-            GradientDrawable avatarBg = new GradientDrawable();
-            avatarBg.setShape(GradientDrawable.OVAL);
-            avatarBg.setColor(AVATAR_COLORS[colorIndex]);
-            holder.layoutAvatar.setBackgroundDrawable(avatarBg);
+            // Last message — show "You: " prefix if from self
+            String preview = chat.getLastMessage();
+            h.tvLastMsg.setText(preview != null ? preview : "");
 
-            // Last message
-            holder.tvChatLastMsg.setText(chat.getLastMessage());
-
-            // Timestamp
+            // Time
             if (chat.getTimestamp() > 0) {
-                Date msgDate = new Date(chat.getTimestamp());
-                long diffHours = (System.currentTimeMillis() - chat.getTimestamp()) / (1000 * 60 * 60);
-                if (diffHours < 24) {
-                    holder.tvChatTime.setText(timeFormat.format(msgDate));
-                } else {
-                    holder.tvChatTime.setText(dateFormat.format(msgDate));
-                }
+                Date d = new Date(chat.getTimestamp());
+                long ageHours = (System.currentTimeMillis() - chat.getTimestamp()) / 3600000L;
+                h.tvTime.setText(ageHours < 24 ? timeFmt.format(d) : dateFmt.format(d));
             } else {
-                holder.tvChatTime.setText("");
+                h.tvTime.setText("");
             }
 
             // Unread badge
             if (chat.getUnread() > 0) {
-                holder.tvUnreadBadge.setVisibility(View.VISIBLE);
-                holder.tvUnreadBadge.setText(String.valueOf(chat.getUnread()));
+                h.tvBadge.setVisibility(View.VISIBLE);
+                h.tvBadge.setText(chat.getUnread() > 99 ? "99+" : String.valueOf(chat.getUnread()));
+                // Green time for unread chats
+                h.tvTime.setTextColor(0xFF00A884);
             } else {
-                holder.tvUnreadBadge.setVisibility(View.GONE);
+                h.tvBadge.setVisibility(View.GONE);
+                h.tvTime.setTextColor(0xFF667781);
             }
 
             return convertView;
         }
 
-        private static class ViewHolder {
+        private class ViewHolder {
             FrameLayout layoutAvatar;
-            TextView tvAvatarLetter;
-            TextView tvChatName;
-            TextView tvChatTime;
-            TextView tvChatLastMsg;
-            TextView tvUnreadBadge;
+            TextView tvAvatarLetter, tvName, tvTime, tvLastMsg, tvBadge;
         }
     }
 }

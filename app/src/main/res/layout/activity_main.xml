@@ -1,109 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Real WhatsApp style — dark header, clean list, no boxy "card" feel -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/bb_dark_bg">
+    android:background="@color/wa_bg">
 
-    <!-- Top Action Bar -->
-    <RelativeLayout
-        android:id="@+id/layout_topbar"
+    <!-- Header — real WA proportions, no buttons with emoji -->
+    <LinearLayout
+        android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="@color/bb_header_bg"
-        android:paddingLeft="14dp"
-        android:paddingRight="10dp">
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="@color/wa_header"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="4dp">
 
         <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:text="@string/app_name"
-            android:textColor="@color/bb_text_primary"
+            android:text="WhatsApp"
+            android:textColor="@color/wa_text"
             android:textSize="20sp"
             android:textStyle="bold" />
 
+        <!-- Status dot (tiny, inline with title) -->
         <View
             android:id="@+id/view_status_dot"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_toRightOf="@id/tv_title"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginRight="4dp"
             android:background="@drawable/badge_unread" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+        <!-- Header action buttons as text, not emoji -->
+        <TextView
+            android:id="@+id/btn_refresh"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:textColor="@color/wa_text_sub"
+            android:textSize="20sp"
+            android:text="&#8635;" />
 
-            <Button
-                android:id="@+id/btn_new_chat"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="+"
-                android:textColor="@color/bb_text_primary"
-                android:textSize="22sp"
-                android:background="@drawable/list_item_selector" />
+        <TextView
+            android:id="@+id/btn_new_chat"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:textColor="@color/wa_text_sub"
+            android:textSize="24sp"
+            android:text="&#43;" />
 
-            <Button
-                android:id="@+id/btn_refresh"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="&#8635;"
-                android:textColor="@color/bb_text_primary"
-                android:textSize="20sp"
-                android:background="@drawable/list_item_selector" />
+        <TextView
+            android:id="@+id/btn_settings"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:textColor="@color/wa_text_sub"
+            android:textSize="18sp"
+            android:text="&#8942;" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_settings"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="&#9881;"
-                android:textColor="@color/bb_text_primary"
-                android:textSize="18sp"
-                android:background="@drawable/list_item_selector" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <!-- Status Banner for Pairing or Errors -->
+    <!-- Status banner (only visible when not connected) -->
     <LinearLayout
         android:id="@+id/layout_status_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#233138"
-        android:paddingLeft="14dp"
-        android:paddingRight="10dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:background="#1A2E38"
+        android:paddingLeft="16dp"
+        android:paddingRight="12dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
         android:gravity="center_vertical"
         android:visibility="gone">
+
+        <View
+            android:id="@+id/banner_dot"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginRight="9dp"
+            android:background="@drawable/badge_unread" />
 
         <TextView
             android:id="@+id/tv_status_banner"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:textColor="#ffc107"
-            android:textSize="13sp"
-            android:text="Not connected to bridge" />
+            android:textColor="@color/wa_text_sub"
+            android:textSize="13sp" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_banner_action"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:background="@drawable/btn_send"
-            android:text="Pair"
-            android:textColor="#ffffff"
-            android:textSize="12sp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/wa_teal"
+            android:textSize="13sp"
+            android:textStyle="bold"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp" />
+            android:text="PAIR" />
     </LinearLayout>
 
+    <!-- Chat list -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -113,20 +113,19 @@
             android:id="@+id/list_chats"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/bb_divider"
+            android:divider="@color/wa_divider"
             android:dividerHeight="1dp"
-            android:choiceMode="singleChoice"
-            android:fastScrollEnabled="true" />
+            android:scrollbars="none" />
 
         <TextView
             android:id="@+id/tv_empty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/bb_text_secondary"
-            android:textSize="15sp"
-            android:padding="24dp"
-            android:text="No chats found.\nTap + to start a chat or Refresh."
+            android:textColor="@color/wa_text_sub"
+            android:textSize="14sp"
+            android:lineSpacingExtra="4dp"
+            android:text="No chats yet.\nTap + or refresh."
             android:visibility="gone" />
 
         <ProgressBar
