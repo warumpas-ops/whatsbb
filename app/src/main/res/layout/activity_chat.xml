@@ -3,91 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/wa_chat_bg">
+    android:background="#101113">
 
-    <!-- Top Conversation Header -->
+    <!-- Clean Header: just back arrow + contact name -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
         android:orientation="horizontal"
-        android:background="@color/wa_header"
         android:gravity="center_vertical"
-        android:paddingLeft="4dp"
-        android:paddingRight="12dp">
+        android:paddingLeft="12dp"
+        android:paddingRight="16dp"
+        android:background="#101113">
 
         <TextView
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/wa_text"
-            android:textSize="22sp"
+            android:textColor="#555A64"
+            android:textSize="20sp"
             android:text="&#8592;" />
 
-        <FrameLayout
-            android:id="@+id/layout_chat_avatar"
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_marginRight="10dp">
-
-            <ImageView
-                android:id="@+id/iv_chat_avatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_chat_avatar_letter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </FrameLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_thread_name"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_thread_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/wa_text"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="end" />
-
-            <TextView
-                android:id="@+id/tv_thread_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/wa_online"
-                android:textSize="11sp"
-                android:text="online" />
-        </LinearLayout>
+            android:textColor="#E0E2E6"
+            android:textSize="16sp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_marginLeft="6dp" />
 
         <TextView
             android:id="@+id/btn_chat_refresh"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="18sp"
+            android:textColor="#555A64"
+            android:textSize="16sp"
             android:text="&#8635;" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/wa_divider" />
+        android:background="#1A1C20" />
 
-    <!-- Message Stream -->
+    <!-- Conversation Stream -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -98,11 +61,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
-            android:dividerHeight="3dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:dividerHeight="6dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
             android:clipToPadding="false"
             android:scrollbars="none" />
 
@@ -111,22 +74,27 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="14sp"
-            android:text="No messages yet.\nType below to begin."
+            android:textColor="#3D414A"
+            android:textSize="13sp"
+            android:text="no messages"
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- Bottom Input Bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A1C20" />
+
+    <!-- Clean Bottom Input Line -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/wa_bg"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:background="#101113"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingBottom="10dp"
         android:gravity="center_vertical">
 
         <EditText
@@ -134,37 +102,41 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:minHeight="42dp"
+            android:minHeight="40dp"
             android:maxLines="5"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="9dp"
-            android:paddingBottom="9dp"
-            android:background="@drawable/input_pill_bg"
-            android:textColor="@color/wa_text"
-            android:textColorHint="@color/wa_text_sub"
-            android:hint="Message"
+            android:paddingLeft="0dp"
+            android:paddingRight="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@null"
+            android:textColor="#E0E2E6"
+            android:textColorHint="#424650"
+            android:hint="Type a message..."
             android:textSize="14sp"
             android:imeOptions="actionSend"
             android:inputType="textCapSentences|textMultiLine" />
 
-        <!-- Green circular send button -->
-        <FrameLayout
+        <TextView
             android:id="@+id/btn_send"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/btn_send_circle">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:paddingLeft="2dp"
-                android:text="&#10148;" />
-        </FrameLayout>
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="6dp"
+            android:textColor="#A0A4AD"
+            android:textSize="13sp"
+            android:text="send &#8593;" />
     </LinearLayout>
+
+    <!-- Hidden compatibility stubs -->
+    <FrameLayout
+        android:id="@+id/layout_chat_avatar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone">
+        <ImageView android:id="@+id/iv_chat_avatar" android:layout_width="0dp" android:layout_height="0dp"/>
+        <TextView android:id="@+id/tv_chat_avatar_letter" android:layout_width="0dp" android:layout_height="0dp"/>
+    </FrameLayout>
+    <TextView android:id="@+id/tv_thread_status" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone"/>
 
 </LinearLayout>

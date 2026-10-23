@@ -4,43 +4,32 @@
     android:layout_height="wrap_content"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
-    android:paddingLeft="4dp"
-    android:paddingRight="64dp"
+    android:paddingRight="50dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_sender_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bubble_incoming"
-        android:padding="10dp">
+        android:textColor="#555A64"
+        android:textSize="11sp"
+        android:paddingBottom="2dp"
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_sender_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#555555"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:paddingBottom="3dp"
-            android:visibility="gone" />
+    <TextView
+        android:id="@+id/tv_text_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#E0E2E6"
+        android:textSize="14sp"
+        android:lineSpacingExtra="2dp" />
 
-        <TextView
-            android:id="@+id/tv_text_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#EEEEEE"
-            android:textSize="14sp"
-            android:lineSpacingExtra="2dp" />
-
-        <TextView
-            android:id="@+id/tv_time_in"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:paddingTop="4dp"
-            android:textColor="#333333"
-            android:textSize="10sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_time_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:textColor="#424650"
+        android:textSize="10sp" />
 
 </LinearLayout>
