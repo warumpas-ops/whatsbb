@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bb_dark_bg">
+
+    <!-- Top Action Bar -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/bb_header_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <Button
+            android:id="@+id/btn_settings_back"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="&#8592;"
+            android:textColor="@color/bb_text_primary"
+            android:textSize="20sp"
+            android:background="@drawable/list_item_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/btn_settings_back"
+            android:layout_centerVertical="true"
+            android:text="Settings"
+            android:textColor="@color/bb_text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="6dp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bridge Server URL"
+                android:textColor="@color/bb_green"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Address of the WhatsBB Node.js companion bridge"
+                android:textColor="@color/bb_text_secondary"
+                android:textSize="11sp"
+                android:layout_marginTop="2dp" />
+
+            <EditText
+                android:id="@+id/edit_server_url"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_bg"
+                android:textColor="@color/bb_text_primary"
+                android:textColorHint="@color/bb_text_secondary"
+                android:hint="@string/bridge_url_hint"
+                android:singleLine="true"
+                android:inputType="textUri"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <Button
+                    android:id="@+id/btn_save_url"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="38dp"
+                    android:background="@drawable/btn_send"
+                    android:text="Save &amp; Connect"
+                    android:textColor="#ffffff"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_test_connection"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/input_bg"
+                    android:text="Test Ping"
+                    android:textColor="@color/bb_text_primary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_test_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/bb_text_secondary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bb_divider"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Account &amp; Session"
+                android:textColor="@color/bb_green"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_link_qr"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_bg"
+                android:text="Pair Device (Show QR Code)"
+                android:textColor="@color/bb_text_primary"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/input_bg"
+                android:text="Unpair / Logout"
+                android:textColor="#ef4444"
+                android:textSize="13sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/bb_divider"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="About WhatsBB"
+                android:textColor="@color/bb_green"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bb_text_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="3dp"
+                android:text="WhatsBB v1.0.0 for BlackBerry 10\nDesigned for Q5, Q10, Classic, and Passport\nUses official WhatsApp Multi-Device linked protocol via local bridge server." />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

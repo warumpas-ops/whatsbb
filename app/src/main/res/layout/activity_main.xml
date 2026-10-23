@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bb_dark_bg">
+
+    <!-- Top Action Bar -->
+    <RelativeLayout
+        android:id="@+id/layout_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/bb_header_bg"
+        android:paddingLeft="14dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/app_name"
+            android:textColor="@color/bb_text_primary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <View
+            android:id="@+id/view_status_dot"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_toRightOf="@id/tv_title"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/badge_unread" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btn_new_chat"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="+"
+                android:textColor="@color/bb_text_primary"
+                android:textSize="22sp"
+                android:background="@drawable/list_item_selector" />
+
+            <Button
+                android:id="@+id/btn_refresh"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="&#8635;"
+                android:textColor="@color/bb_text_primary"
+                android:textSize="20sp"
+                android:background="@drawable/list_item_selector" />
+
+            <Button
+                android:id="@+id/btn_settings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="&#9881;"
+                android:textColor="@color/bb_text_primary"
+                android:textSize="18sp"
+                android:background="@drawable/list_item_selector" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Status Banner for Pairing or Errors -->
+    <LinearLayout
+        android:id="@+id/layout_status_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#233138"
+        android:paddingLeft="14dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_status_banner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="#ffc107"
+            android:textSize="13sp"
+            android:text="Not connected to bridge" />
+
+        <Button
+            android:id="@+id/btn_banner_action"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_send"
+            android:text="Pair"
+            android:textColor="#ffffff"
+            android:textSize="12sp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/list_chats"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/bb_divider"
+            android:dividerHeight="1dp"
+            android:choiceMode="singleChoice"
+            android:fastScrollEnabled="true" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/bb_text_secondary"
+            android:textSize="15sp"
+            android:padding="24dp"
+            android:text="No chats found.\nTap + to start a chat or Refresh."
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/progress_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>

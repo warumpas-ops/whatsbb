@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bb_dark_bg">
+
+    <!-- Top Action Bar -->
+    <RelativeLayout
+        android:id="@+id/layout_chat_topbar"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="@color/bb_header_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="&#8592;"
+            android:textColor="@color/bb_text_primary"
+            android:textSize="20sp"
+            android:background="@drawable/list_item_selector" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@id/btn_back"
+            android:layout_toLeftOf="@+id/btn_chat_refresh"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="4dp">
+
+            <TextView
+                android:id="@+id/tv_thread_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bb_text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="Contact" />
+
+            <TextView
+                android:id="@+id/tv_thread_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/bb_text_secondary"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:text="Online" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_chat_refresh"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="&#8635;"
+            android:textColor="@color/bb_text_primary"
+            android:textSize="18sp"
+            android:background="@drawable/list_item_selector" />
+    </RelativeLayout>
+
+    <!-- Message List -->
+    <ListView
+        android:id="@+id/list_messages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="6dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:clipToPadding="false"
+        android:transcriptMode="alwaysScroll"
+        android:stackFromBottom="true" />
+
+    <!-- Bottom Message Input Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/bb_header_bg"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
+        android:gravity="center_vertical">
+
+        <EditText
+            android:id="@+id/edit_message"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:maxLines="4"
+            android:background="@drawable/input_bg"
+            android:textColor="@color/bb_text_primary"
+            android:textColorHint="@color/bb_text_secondary"
+            android:hint="@string/type_a_message"
+            android:textSize="15sp"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textMultiLine" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="48dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/btn_send"
+            android:text="&#10148;"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>
