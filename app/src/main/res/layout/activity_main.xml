@@ -5,31 +5,32 @@
     android:orientation="vertical"
     android:background="@color/wa_bg">
 
-    <!-- Top WhatsApp Bar -->
+    <!-- Minimalist Header -->
     <LinearLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         android:background="@color/wa_header"
         android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="4dp">
+        android:paddingLeft="18dp"
+        android:paddingRight="6dp">
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="WhatsApp"
+            android:text="Messages"
+            android:fontFamily="sans-serif-light"
             android:textColor="@color/wa_text"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- Status indicator dot (small) -->
+        <!-- Status dot -->
         <View
             android:id="@+id/view_status_dot"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/badge_unread" />
 
@@ -40,10 +41,10 @@
             android:layout_height="44dp"
             android:gravity="center"
             android:textColor="@color/wa_text_sub"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="&#8635;" />
 
-        <!-- Settings / Overflow Menu -->
+        <!-- Settings action -->
         <TextView
             android:id="@+id/btn_settings"
             android:layout_width="40dp"
@@ -54,121 +55,21 @@
             android:text="&#8942;" />
     </LinearLayout>
 
-    <!-- Classic WhatsApp Tab Bar -->
-    <LinearLayout
+    <!-- Hairline Separator -->
+    <View
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:orientation="horizontal"
-        android:background="@color/wa_header">
+        android:layout_height="1dp"
+        android:background="@color/wa_divider" />
 
-        <!-- CHATS TAB (Active) -->
-        <LinearLayout
-            android:id="@+id/tab_chats"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <TextView
-                    android:id="@+id/tv_tab_chats_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CHATS"
-                    android:textColor="@color/wa_tab_active"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tv_tab_badge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="16dp"
-                    android:minWidth="16dp"
-                    android:layout_marginLeft="6dp"
-                    android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:background="@drawable/badge_unread"
-                    android:gravity="center"
-                    android:textColor="#0B141B"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <!-- Active tab indicator line -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="@color/wa_tab_active" />
-        </LinearLayout>
-
-        <!-- STATUS TAB -->
-        <LinearLayout
-            android:id="@+id/tab_status"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="STATUS"
-                android:textColor="@color/wa_tab_inactive"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#00000000" />
-        </LinearLayout>
-
-        <!-- CALLS TAB -->
-        <LinearLayout
-            android:id="@+id/tab_calls"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="CALLS"
-                android:textColor="@color/wa_tab_inactive"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:background="#00000000" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Disconnected Banner (only shows when offline) -->
+    <!-- Offline Banner (subtle) -->
     <LinearLayout
         android:id="@+id/layout_status_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#1F2C34"
-        android:paddingLeft="16dp"
-        android:paddingRight="12dp"
+        android:background="#141414"
+        android:paddingLeft="18dp"
+        android:paddingRight="14dp"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
         android:gravity="center_vertical"
@@ -176,9 +77,9 @@
 
         <View
             android:id="@+id/banner_dot"
-            android:layout_width="8dp"
-            android:layout_height="8dp"
-            android:layout_marginRight="9dp"
+            android:layout_width="7dp"
+            android:layout_height="7dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/badge_unread" />
 
         <TextView
@@ -186,6 +87,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-light"
             android:textColor="@color/wa_text_sub"
             android:textSize="13sp" />
 
@@ -193,14 +95,15 @@
             android:id="@+id/btn_banner_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/wa_teal"
-            android:textSize="13sp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
             android:textStyle="bold"
-            android:paddingLeft="12dp"
+            android:paddingLeft="10dp"
             android:text="PAIR" />
     </LinearLayout>
 
-    <!-- Chats List Area with Floating Action Button -->
+    <!-- Chat List Frame -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -211,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/wa_divider"
-            android:dividerHeight="0.8dp"
+            android:dividerHeight="1dp"
             android:scrollbars="none" />
 
         <TextView
@@ -219,10 +122,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:fontFamily="sans-serif-light"
             android:textColor="@color/wa_text_sub"
             android:textSize="14sp"
             android:lineSpacingExtra="4dp"
-            android:text="No conversations yet.\nTap the green button to start a chat."
+            android:text="No conversations.\nTap + below to start."
             android:visibility="gone" />
 
         <ProgressBar
@@ -232,24 +136,24 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <!-- Floating Action Button (FAB) — Real WhatsApp New Chat Button -->
+        <!-- Minimalist Floating Action Button -->
         <FrameLayout
             android:id="@+id/btn_new_chat"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
             android:layout_gravity="bottom|right"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/btn_fab">
 
-            <!-- Chat icon (speech bubble shape) -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:text="&#9993;" />
+                android:textColor="#000000"
+                android:textSize="26sp"
+                android:fontFamily="sans-serif-light"
+                android:text="&#43;" />
         </FrameLayout>
     </FrameLayout>
 

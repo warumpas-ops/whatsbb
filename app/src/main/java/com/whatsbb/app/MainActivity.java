@@ -51,11 +51,10 @@ public class MainActivity extends Activity {
     private boolean isPaused = false;
     private String currentStatus = "DISCONNECTED";
 
-    // Real WhatsApp avatar color palette
+    // Elegant monochrome avatar tones
     private static final int[] AVATAR_COLORS = {
-        0xFFE53935, 0xFF8E24AA, 0xFF1E88E5, 0xFF00897B,
-        0xFF43A047, 0xFFFB8C00, 0xFF6D4C41, 0xFF3949AB,
-        0xFF00ACC1, 0xFFD81B60, 0xFF7B1FA2, 0xFF0288D1
+        0xFF1E1E1E, 0xFF242424, 0xFF2A2A2A, 0xFF2F2F2F,
+        0xFF343434, 0xFF222222, 0xFF2D2D2D, 0xFF1A1A1A
     };
 
     @Override
@@ -364,6 +363,7 @@ public class MainActivity extends Activity {
             GradientDrawable bg = new GradientDrawable();
             bg.setShape(GradientDrawable.OVAL);
             bg.setColor(AVATAR_COLORS[colorIdx]);
+            bg.setStroke(1, 0xFF383838);
             h.layoutAvatar.setBackgroundDrawable(bg);
 
             // Name

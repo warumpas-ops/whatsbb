@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="68dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
     android:background="@drawable/chat_row_selector">
 
-    <!-- Avatar Circle -->
+    <!-- Minimalist Avatar Circle -->
     <FrameLayout
         android:id="@+id/layout_avatar"
-        android:layout_width="50dp"
-        android:layout_height="50dp">
+        android:layout_width="44dp"
+        android:layout_height="44dp">
 
         <TextView
             android:id="@+id/tv_avatar_letter"
@@ -20,7 +20,8 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-light"
             android:textStyle="bold" />
     </FrameLayout>
 
@@ -46,7 +47,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_text"
-                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -56,7 +58,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_text_meta"
-                android:textSize="12sp" />
+                android:fontFamily="sans-serif-light"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- Preview & Unread Row -->
@@ -67,13 +70,12 @@
             android:gravity="center_vertical"
             android:layout_marginTop="3dp">
 
-            <!-- Checkmarks for outgoing preview -->
             <TextView
                 android:id="@+id/tv_preview_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/wa_ticks_blue"
-                android:textSize="13sp"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
                 android:layout_marginRight="4dp"
                 android:text="&#10003;&#10003;"
                 android:visibility="gone" />
@@ -84,6 +86,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_text_sub"
+                android:fontFamily="sans-serif-light"
                 android:textSize="13sp"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -91,14 +94,14 @@
             <TextView
                 android:id="@+id/tv_unread_badge"
                 android:layout_width="wrap_content"
-                android:layout_height="18dp"
-                android:minWidth="18dp"
+                android:layout_height="17dp"
+                android:minWidth="17dp"
                 android:background="@drawable/badge_unread"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="11sp"
+                android:textColor="#000000"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
         </LinearLayout>

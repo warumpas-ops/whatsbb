@@ -11,16 +11,16 @@
         android:orientation="horizontal"
         android:background="@color/wa_header"
         android:gravity="center_vertical"
-        android:paddingLeft="4dp"
-        android:paddingRight="8dp">
+        android:paddingLeft="6dp"
+        android:paddingRight="12dp">
 
         <TextView
             android:id="@+id/btn_settings_back"
-            android:layout_width="44dp"
+            android:layout_width="40dp"
             android:layout_height="44dp"
             android:gravity="center"
             android:textColor="@color/wa_text"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:text="&#8592;" />
 
         <TextView
@@ -29,36 +29,43 @@
             android:layout_height="wrap_content"
             android:text="Settings"
             android:textColor="@color/wa_text"
+            android:fontFamily="sans-serif"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginLeft="4dp" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/wa_divider" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Bridge URL section -->
+            <!-- Bridge Server Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="BRIDGE SERVER"
-                android:textColor="@color/wa_teal"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:textColor="#FFFFFF"
+                android:fontFamily="sans-serif"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Address of the WhatsBB companion bridge running on your PC or Raspberry Pi"
+                android:text="IP and port of the WhatsBB companion bridge running on your local network or server."
                 android:textColor="@color/wa_text_sub"
+                android:fontFamily="sans-serif-light"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
                 android:lineSpacingExtra="2dp" />
@@ -67,12 +74,13 @@
                 android:id="@+id/edit_server_url"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="12dp"
                 android:paddingLeft="14dp"
                 android:paddingRight="14dp"
-                android:background="@drawable/input_bg"
+                android:background="@drawable/input_pill_bg"
                 android:textColor="@color/wa_text"
                 android:textColorHint="@color/wa_text_sub"
+                android:fontFamily="sans-serif"
                 android:hint="http://192.168.1.5:3000"
                 android:singleLine="true"
                 android:inputType="textUri"
@@ -82,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="12dp">
 
                 <TextView
                     android:id="@+id/btn_save_url"
@@ -90,10 +98,11 @@
                     android:layout_weight="1"
                     android:layout_height="40dp"
                     android:gravity="center"
-                    android:background="@drawable/btn_send"
+                    android:background="@drawable/btn_send_circle"
                     android:text="Save"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"
+                    android:textColor="#000000"
+                    android:fontFamily="sans-serif"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -102,19 +111,21 @@
                     android:layout_weight="1"
                     android:layout_height="40dp"
                     android:gravity="center"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/input_bg"
-                    android:text="Ping"
-                    android:textColor="@color/wa_text_sub"
-                    android:textSize="14sp" />
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/input_pill_bg"
+                    android:text="Test Ping"
+                    android:textColor="@color/wa_text"
+                    android:fontFamily="sans-serif-light"
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_test_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:textColor="@color/wa_text_sub"
+                android:fontFamily="sans-serif-light"
                 android:textSize="12sp"
                 android:visibility="gone" />
 
@@ -123,27 +134,29 @@
                 android:layout_height="1dp"
                 android:background="@color/wa_divider"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="24dp" />
 
-            <!-- Account section -->
+            <!-- Account Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ACCOUNT"
-                android:textColor="@color/wa_teal"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:text="SESSION"
+                android:textColor="#FFFFFF"
+                android:fontFamily="sans-serif"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/btn_link_qr"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:gravity="center_vertical"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/input_bg"
-                android:text="  Pair Device (Scan QR Code)"
+                android:layout_marginTop="12dp"
+                android:paddingLeft="14dp"
+                android:background="@drawable/input_pill_bg"
+                android:text="Pair Device (Scan QR Code)"
                 android:textColor="@color/wa_text"
+                android:fontFamily="sans-serif"
                 android:textSize="14sp" />
 
             <TextView
@@ -151,10 +164,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:gravity="center_vertical"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/input_bg"
-                android:text="  Unpair / Log Out"
-                android:textColor="@color/wa_red"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="14dp"
+                android:background="@drawable/input_pill_bg"
+                android:text="Unpair / Log Out"
+                android:textColor="#EF4444"
+                android:fontFamily="sans-serif"
                 android:textSize="14sp" />
 
             <View
@@ -162,25 +177,26 @@
                 android:layout_height="1dp"
                 android:background="@color/wa_divider"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginBottom="24dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ABOUT"
-                android:textColor="@color/wa_teal"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.1" />
+                android:textColor="#FFFFFF"
+                android:fontFamily="sans-serif"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_text_sub"
+                android:fontFamily="sans-serif-light"
                 android:textSize="12sp"
                 android:layout_marginTop="8dp"
                 android:lineSpacingExtra="4dp"
-                android:text="WhatsBB v1.1 for BlackBerry 10\nQ5 · Q10 · Classic · Passport · Z10 · Z30\nUses WhatsApp Multi-Device (Linked Devices) protocol." />
+                android:text="WhatsBB v1.4.0 (Monochrome Edition)\nBlackBerry 10 (Passport, Classic, Q10, Q5, Z10, Z30)\nPersistent linked device client." />
 
         </LinearLayout>
     </ScrollView>

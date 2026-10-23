@@ -48,8 +48,8 @@ public class ChatActivity extends Activity {
     private int lastMessageCount = 0;
 
     private static final int[] AVATAR_COLORS = {
-        0xFFE53935, 0xFF8E24AA, 0xFF1E88E5, 0xFF00897B,
-        0xFF43A047, 0xFFFB8C00, 0xFF6D4C41, 0xFF3949AB
+        0xFF1E1E1E, 0xFF242424, 0xFF2A2A2A, 0xFF2F2F2F,
+        0xFF343434, 0xFF222222, 0xFF2D2D2D, 0xFF1A1A1A
     };
 
     @Override
@@ -87,6 +87,7 @@ public class ChatActivity extends Activity {
             GradientDrawable avatarBg = new GradientDrawable();
             avatarBg.setShape(GradientDrawable.OVAL);
             avatarBg.setColor(AVATAR_COLORS[colorIdx]);
+            avatarBg.setStroke(1, 0xFF383838);
             avatarFrame.setBackgroundDrawable(avatarBg);
         }
 

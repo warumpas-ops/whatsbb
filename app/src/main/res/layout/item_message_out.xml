@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp"
-    android:paddingLeft="64dp"
-    android:paddingRight="4dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:paddingLeft="60dp"
+    android:paddingRight="2dp"
     android:orientation="vertical"
     android:gravity="right">
 
@@ -19,9 +19,10 @@
             android:id="@+id/tv_text_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/wa_text"
-            android:textSize="15sp"
-            android:lineSpacingExtra="1dp" />
+            android:textColor="#FFFFFF"
+            android:fontFamily="sans-serif"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -29,23 +30,23 @@
             android:layout_gravity="right"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingTop="2dp">
+            android:paddingTop="3dp">
 
             <TextView
                 android:id="@+id/tv_time_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/wa_text_meta"
-                android:textSize="11sp" />
+                android:fontFamily="sans-serif-light"
+                android:textColor="#777777"
+                android:textSize="10sp" />
 
-            <!-- Double blue checks -->
             <TextView
                 android:id="@+id/tv_status_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:textColor="@color/wa_ticks_blue"
-                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
                 android:text="&#10003;&#10003;" />
         </LinearLayout>
     </LinearLayout>

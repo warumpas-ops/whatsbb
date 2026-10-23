@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp"
-    android:paddingLeft="4dp"
-    android:paddingRight="64dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="60dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -14,13 +14,13 @@
         android:orientation="vertical"
         android:background="@drawable/bubble_incoming">
 
-        <!-- Sender name for group chats -->
         <TextView
             android:id="@+id/tv_sender_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#53BDEB"
-            android:textSize="12sp"
+            android:textColor="#AAAAAA"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:paddingBottom="2dp"
             android:visibility="gone" />
@@ -29,18 +29,20 @@
             android:id="@+id/tv_text_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/wa_text"
-            android:textSize="15sp"
-            android:lineSpacingExtra="1dp" />
+            android:textColor="#F0F0F0"
+            android:fontFamily="sans-serif"
+            android:textSize="14sp"
+            android:lineSpacingExtra="2dp" />
 
         <TextView
             android:id="@+id/tv_time_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingTop="2dp"
-            android:textColor="@color/wa_text_meta"
-            android:textSize="11sp" />
+            android:paddingTop="3dp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="#666666"
+            android:textSize="10sp" />
     </LinearLayout>
 
 </LinearLayout>

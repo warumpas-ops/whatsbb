@@ -5,65 +5,57 @@
     android:orientation="vertical"
     android:background="@color/wa_chat_bg">
 
-    <!-- WhatsApp Conversation Header -->
+    <!-- Minimalist Conversation Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:orientation="horizontal"
         android:background="@color/wa_header"
         android:gravity="center_vertical"
-        android:paddingLeft="2dp"
-        android:paddingRight="8dp">
+        android:paddingLeft="4dp"
+        android:paddingRight="10dp">
 
-        <!-- Combined Back + Avatar Click Area -->
-        <LinearLayout
-            android:id="@+id/layout_header_back_avatar"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="36dp"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingRight="6dp">
+            android:gravity="center"
+            android:textColor="@color/wa_text"
+            android:textSize="20sp"
+            android:text="&#8592;" />
+
+        <!-- Minimal Avatar -->
+        <FrameLayout
+            android:id="@+id/layout_chat_avatar"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginRight="10dp">
 
             <TextView
-                android:id="@+id/btn_back"
-                android:layout_width="32dp"
+                android:id="@+id/tv_chat_avatar_letter"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="@color/wa_text"
-                android:textSize="22sp"
-                android:text="&#8592;" />
-
-            <!-- Circular Avatar -->
-            <FrameLayout
-                android:id="@+id/layout_chat_avatar"
-                android:layout_width="38dp"
-                android:layout_height="38dp">
-
-                <TextView
-                    android:id="@+id/tv_chat_avatar_letter"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-            </FrameLayout>
-        </LinearLayout>
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-light"
+                android:textStyle="bold" />
+        </FrameLayout>
 
         <!-- Name + Online Status -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="6dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_thread_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_text"
-                android:textSize="16sp"
+                android:fontFamily="sans-serif"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -73,20 +65,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/wa_online"
-                android:textSize="12sp"
+                android:fontFamily="sans-serif-light"
+                android:textSize="11sp"
                 android:text="online" />
         </LinearLayout>
 
-        <!-- Refresh / More Options -->
+        <!-- Refresh Button -->
         <TextView
             android:id="@+id/btn_chat_refresh"
             android:layout_width="38dp"
             android:layout_height="44dp"
             android:gravity="center"
             android:textColor="@color/wa_text_sub"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:text="&#8635;" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/wa_divider" />
 
     <!-- Message Bubble Stream Container -->
     <FrameLayout
@@ -100,10 +98,10 @@
             android:layout_height="match_parent"
             android:divider="@null"
             android:dividerHeight="3dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:clipToPadding="false"
             android:scrollbars="none" />
 
@@ -112,88 +110,61 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:fontFamily="sans-serif-light"
             android:textColor="@color/wa_text_sub"
             android:textSize="14sp"
-            android:text="No messages here yet.\nSay hello!"
+            android:text="No messages yet.\nType below to begin."
             android:visibility="gone" />
     </FrameLayout>
 
-    <!-- WhatsApp Iconic Bottom Input Bar -->
+    <!-- Bottom Input Bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="6dp"
-        android:paddingRight="6dp"
-        android:paddingTop="5dp"
-        android:paddingBottom="6dp"
-        android:gravity="bottom">
+        android:background="@color/wa_header"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:gravity="center_vertical">
 
-        <!-- Rounded Input Pill Container -->
-        <LinearLayout
+        <!-- Input Box Pill -->
+        <EditText
+            android:id="@+id/edit_message"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:minHeight="44dp"
-            android:orientation="horizontal"
+            android:minHeight="40dp"
+            android:maxLines="5"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="9dp"
+            android:paddingBottom="9dp"
             android:background="@drawable/input_pill_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp">
+            android:textColor="@color/wa_text"
+            android:textColorHint="@color/wa_text_sub"
+            android:fontFamily="sans-serif"
+            android:hint="Message..."
+            android:textSize="14sp"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textMultiLine" />
 
-            <!-- Smiley Emoji Icon -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/wa_text_sub"
-                android:textSize="20sp"
-                android:layout_marginRight="8dp"
-                android:text="&#9786;" />
-
-            <!-- Input Box -->
-            <EditText
-                android:id="@+id/edit_message"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:minHeight="40dp"
-                android:maxLines="5"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:background="#00000000"
-                android:textColor="@color/wa_text"
-                android:textColorHint="@color/wa_text_sub"
-                android:hint="Message"
-                android:textSize="15sp"
-                android:imeOptions="actionSend"
-                android:inputType="textCapSentences|textMultiLine" />
-
-            <!-- Paperclip Attach Icon -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/wa_text_sub"
-                android:textSize="19sp"
-                android:paddingLeft="6dp"
-                android:text="&#128206;" />
-        </LinearLayout>
-
-        <!-- Floating Green Send Button (Circle) -->
+        <!-- Minimalist Send Button -->
         <FrameLayout
             android:id="@+id/btn_send"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginLeft="6dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/btn_send_circle">
 
-            <!-- Send Paper Airplane Arrow -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:paddingLeft="2dp"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:paddingLeft="1dp"
                 android:text="&#10148;" />
         </FrameLayout>
     </LinearLayout>
