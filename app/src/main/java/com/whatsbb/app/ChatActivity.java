@@ -31,9 +31,11 @@ public class ChatActivity extends Activity {
     private PreferencesManager prefs;
 
     private ListView listMessages;
+    private TextView tvChatEmpty;
     private EditText editMessage;
     private FrameLayout btnSend;
-    private TextView tvThreadName, tvThreadStatus;
+    private TextView tvThreadName;
+    private TextView tvThreadStatus;
 
     private MessageAdapter adapter;
     private List<MessageModel> messageList = new ArrayList<MessageModel>();
@@ -42,6 +44,8 @@ public class ChatActivity extends Activity {
     private Runnable pollRunnable;
     private boolean isPaused = false;
     private boolean isSending = false;
+    // Track last known message count to avoid unnecessary scrolls
+    private int lastMessageCount = 0;
 
     private static final int[] AVATAR_COLORS = {
         0xFFE53935, 0xFF8E24AA, 0xFF1E88E5, 0xFF00897B,
@@ -63,52 +67,71 @@ public class ChatActivity extends Activity {
         tvThreadName = (TextView) findViewById(R.id.tv_thread_name);
         tvThreadStatus = (TextView) findViewById(R.id.tv_thread_status);
         listMessages = (ListView) findViewById(R.id.list_messages);
+        tvChatEmpty = (TextView) findViewById(R.id.tv_chat_empty);
         editMessage = (EditText) findViewById(R.id.edit_message);
         btnSend = (FrameLayout) findViewById(R.id.btn_send);
 
         tvThreadName.setText(chatName);
-        tvThreadStatus.setText(jid != null && jid.endsWith("@g.us") ? "Group" : "");
+        if (jid != null && jid.endsWith("@g.us")) {
+            tvThreadStatus.setText("Group · tap for info");
+        }
 
-        // Set avatar in header
+        // Set header avatar
         FrameLayout avatarFrame = (FrameLayout) findViewById(R.id.layout_chat_avatar);
         TextView avatarLetter = (TextView) findViewById(R.id.tv_chat_avatar_letter);
         if (chatName != null && !chatName.isEmpty()) {
             avatarLetter.setText(chatName.substring(0, 1).toUpperCase(Locale.getDefault()));
         }
-        int colorIdx = jid != null ? Math.abs(jid.hashCode()) % AVATAR_COLORS.length : 0;
-        GradientDrawable avatarBg = new GradientDrawable();
-        avatarBg.setShape(GradientDrawable.OVAL);
-        avatarBg.setColor(AVATAR_COLORS[colorIdx]);
-        avatarFrame.setBackgroundDrawable(avatarBg);
+        if (jid != null) {
+            int colorIdx = Math.abs(jid.hashCode()) % AVATAR_COLORS.length;
+            GradientDrawable avatarBg = new GradientDrawable();
+            avatarBg.setShape(GradientDrawable.OVAL);
+            avatarBg.setColor(AVATAR_COLORS[colorIdx]);
+            avatarFrame.setBackgroundDrawable(avatarBg);
+        }
 
         adapter = new MessageAdapter(this, messageList);
         listMessages.setAdapter(adapter);
 
+        // Back
         findViewById(R.id.btn_back).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { finish(); }
+            @Override
+            public void onClick(View v) { finish(); }
         });
 
+        // Refresh
         findViewById(R.id.btn_chat_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { fetchMessages(); }
+            @Override
+            public void onClick(View v) { loadMessages(true); }
         });
 
+        // Send button
         btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { submitMessage(); }
+            @Override
+            public void onClick(View v) { sendMessage(); }
         });
 
+        // IME send action
         editMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEND) { submitMessage(); return true; }
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    sendMessage();
+                    return true;
+                }
                 return false;
             }
         });
 
+        // Physical BB keyboard — Enter sends (Shift+Enter = newline)
         editMessage.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
-                    if (!event.isShiftPressed()) { submitMessage(); return true; }
+                if (keyCode == KeyEvent.KEYCODE_ENTER
+                        && event.getAction() == KeyEvent.ACTION_DOWN
+                        && !event.isShiftPressed()) {
+                    sendMessage();
+                    return true;
                 }
                 return false;
             }
@@ -118,21 +141,24 @@ public class ChatActivity extends Activity {
             @Override
             public void run() {
                 if (!isPaused) {
-                    fetchMessages();
+                    loadMessages(false);
                     pollHandler.postDelayed(this, 2500);
                 }
             }
         };
 
-        fetchMessages();
+        // Load immediately
+        loadMessages(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         isPaused = false;
-        fetchMessages();
+        loadMessages(false);
         pollHandler.postDelayed(pollRunnable, 2500);
+        // Auto-focus keyboard so user can start typing immediately
+        editMessage.requestFocus();
     }
 
     @Override
@@ -142,27 +168,45 @@ public class ChatActivity extends Activity {
         pollHandler.removeCallbacks(pollRunnable);
     }
 
-    private void submitMessage() {
+    private void sendMessage() {
+        if (jid == null) return;
         String text = editMessage.getText().toString().trim();
         if (text.isEmpty() || isSending) return;
 
         editMessage.setText("");
 
-        // Optimistic message
-        MessageModel opt = new MessageModel("tmp_" + System.currentTimeMillis(), true, text, System.currentTimeMillis(), "You");
+        // Optimistically show the message right away
+        MessageModel opt = new MessageModel(
+            "tmp_" + System.currentTimeMillis(),
+            true, text, System.currentTimeMillis(), "You"
+        );
         messageList.add(opt);
         adapter.notifyDataSetChanged();
-        listMessages.setSelection(adapter.getCount() - 1);
+        scrollToBottom();
 
         new SendTask(text).execute();
     }
 
-    private void fetchMessages() {
+    private void loadMessages(boolean scrollToBottom) {
         if (jid == null) return;
-        new LoadMessagesTask().execute();
+        new LoadMessagesTask(scrollToBottom).execute();
+    }
+
+    private void scrollToBottom() {
+        if (!messageList.isEmpty()) {
+            listMessages.post(new Runnable() {
+                @Override
+                public void run() {
+                    listMessages.setSelection(adapter.getCount() - 1);
+                }
+            });
+        }
     }
 
     private class LoadMessagesTask extends AsyncTask<Void, Void, List<MessageModel>> {
+        private final boolean shouldScrollToBottom;
+        LoadMessagesTask(boolean scrollToBottom) { this.shouldScrollToBottom = scrollToBottom; }
+
         @Override
         protected List<MessageModel> doInBackground(Void... p) {
             try { return ApiClient.getMessages(prefs.getServerUrl(), jid); }
@@ -172,94 +216,130 @@ public class ChatActivity extends Activity {
         @Override
         protected void onPostExecute(List<MessageModel> result) {
             if (result != null) {
+                boolean hadNewMessages = result.size() > lastMessageCount;
                 messageList.clear();
                 messageList.addAll(result);
                 adapter.notifyDataSetChanged();
-                listMessages.setSelection(adapter.getCount() - 1);
+
+                if (messageList.isEmpty()) {
+                    tvChatEmpty.setVisibility(View.VISIBLE);
+                    listMessages.setVisibility(View.INVISIBLE);
+                } else {
+                    tvChatEmpty.setVisibility(View.GONE);
+                    listMessages.setVisibility(View.VISIBLE);
+                    // Scroll to bottom on first load or when new messages arrive
+                    if (shouldScrollToBottom || hadNewMessages) {
+                        scrollToBottom();
+                    }
+                }
+                lastMessageCount = result.size();
             }
         }
     }
 
     private class SendTask extends AsyncTask<Void, Void, Boolean> {
         private final String text;
-        SendTask(String text) { this.text = text; }
+        SendTask(String t) { text = t; }
 
         @Override protected void onPreExecute() { isSending = true; }
 
         @Override
         protected Boolean doInBackground(Void... p) {
-            try { ApiClient.sendMessage(prefs.getServerUrl(), jid, text); return true; }
-            catch (Exception e) { return false; }
+            try {
+                ApiClient.sendMessage(prefs.getServerUrl(), jid, text);
+                return true;
+            } catch (Exception e) { return false; }
         }
 
         @Override
         protected void onPostExecute(Boolean ok) {
             isSending = false;
-            if (!ok) Toast.makeText(ChatActivity.this, "Failed to send — check bridge", Toast.LENGTH_SHORT).show();
-            fetchMessages();
+            if (!ok) {
+                Toast.makeText(ChatActivity.this, "Failed to send — check bridge", Toast.LENGTH_SHORT).show();
+            }
+            // Reload to get server-confirmed message (replaces the optimistic one)
+            loadMessages(true);
         }
     }
 
+    // ── Message list adapter ────────────────────────────────────────────────
     private static class MessageAdapter extends BaseAdapter {
-        private final Context context;
+        private final Context ctx;
         private final List<MessageModel> items;
         private final LayoutInflater inflater;
         private final SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         MessageAdapter(Context ctx, List<MessageModel> items) {
-            context = ctx;
+            this.ctx = ctx;
             this.items = items;
-            inflater = LayoutInflater.from(ctx);
+            this.inflater = LayoutInflater.from(ctx);
         }
 
         @Override public int getCount() { return items.size(); }
         @Override public Object getItem(int p) { return items.get(p); }
         @Override public long getItemId(int p) { return p; }
 
+        // Two distinct view types so recycler never mixes them
+        @Override public int getViewTypeCount() { return 2; }
+        @Override public int getItemViewType(int position) {
+            return items.get(position).isFromMe() ? 1 : 0;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder h;
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.item_message, parent, false);
-                h = new ViewHolder();
-                h.layoutIn = (LinearLayout) convertView.findViewById(R.id.layout_bubble_in);
-                h.tvSenderIn = (TextView) convertView.findViewById(R.id.tv_sender_in);
-                h.tvTextIn = (TextView) convertView.findViewById(R.id.tv_text_in);
-                h.tvTimeIn = (TextView) convertView.findViewById(R.id.tv_time_in);
-                h.layoutOut = (LinearLayout) convertView.findViewById(R.id.layout_bubble_out);
-                h.tvTextOut = (TextView) convertView.findViewById(R.id.tv_text_out);
-                h.tvTimeOut = (TextView) convertView.findViewById(R.id.tv_time_out);
-                h.tvTicks = (TextView) convertView.findViewById(R.id.tv_status_ticks);
-                convertView.setTag(h);
-            } else {
-                h = (ViewHolder) convertView.getTag();
-            }
-
             MessageModel msg = items.get(position);
-            String time = msg.getTimestamp() > 0 ? timeFmt.format(new Date(msg.getTimestamp())) : "";
+            String timeStr = msg.getTimestamp() > 0
+                ? timeFmt.format(new Date(msg.getTimestamp())) : "";
 
             if (msg.isFromMe()) {
-                h.layoutIn.setVisibility(View.GONE);
-                h.layoutOut.setVisibility(View.VISIBLE);
-                h.tvTextOut.setText(msg.getText());
-                h.tvTimeOut.setText(time);
+                // ── Outgoing ──
+                ViewHolderOut h;
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.item_message_out, parent, false);
+                    h = new ViewHolderOut();
+                    h.tvText = (TextView) convertView.findViewById(R.id.tv_text_out);
+                    h.tvTime = (TextView) convertView.findViewById(R.id.tv_time_out);
+                    h.tvTicks = (TextView) convertView.findViewById(R.id.tv_status_ticks);
+                    convertView.setTag(h);
+                } else {
+                    h = (ViewHolderOut) convertView.getTag();
+                }
+                h.tvText.setText(msg.getText());
+                h.tvTime.setText(timeStr);
                 h.tvTicks.setText("\u2713\u2713");
             } else {
-                h.layoutOut.setVisibility(View.GONE);
-                h.layoutIn.setVisibility(View.VISIBLE);
-                boolean showSender = msg.getSender() != null && !msg.getSender().isEmpty() && !msg.getSender().equals("You");
-                h.tvSenderIn.setVisibility(showSender ? View.VISIBLE : View.GONE);
-                if (showSender) h.tvSenderIn.setText(msg.getSender());
-                h.tvTextIn.setText(msg.getText());
-                h.tvTimeIn.setText(time);
+                // ── Incoming ──
+                ViewHolderIn h;
+                if (convertView == null) {
+                    convertView = inflater.inflate(R.layout.item_message_in, parent, false);
+                    h = new ViewHolderIn();
+                    h.tvSender = (TextView) convertView.findViewById(R.id.tv_sender_in);
+                    h.tvText = (TextView) convertView.findViewById(R.id.tv_text_in);
+                    h.tvTime = (TextView) convertView.findViewById(R.id.tv_time_in);
+                    convertView.setTag(h);
+                } else {
+                    h = (ViewHolderIn) convertView.getTag();
+                }
+                boolean showSender = msg.getSender() != null
+                    && !msg.getSender().isEmpty()
+                    && !msg.getSender().equals("You");
+                if (showSender) {
+                    h.tvSender.setVisibility(View.VISIBLE);
+                    h.tvSender.setText(msg.getSender());
+                } else {
+                    h.tvSender.setVisibility(View.GONE);
+                }
+                h.tvText.setText(msg.getText());
+                h.tvTime.setText(timeStr);
             }
             return convertView;
         }
 
-        private static class ViewHolder {
-            LinearLayout layoutIn, layoutOut;
-            TextView tvSenderIn, tvTextIn, tvTimeIn;
-            TextView tvTextOut, tvTimeOut, tvTicks;
+        private static class ViewHolderOut {
+            TextView tvText, tvTime, tvTicks;
+        }
+        private static class ViewHolderIn {
+            TextView tvSender, tvText, tvTime;
         }
     }
 }

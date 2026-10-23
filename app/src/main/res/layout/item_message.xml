@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Real WhatsApp message bubble item -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="1dp"
-    android:paddingBottom="1dp">
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
 
-    <!-- INCOMING bubble (left-aligned) -->
+    <!-- INCOMING bubble — left aligned -->
     <LinearLayout
         android:id="@+id/layout_bubble_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="64dp"
+        android:layout_gravity="left|center_vertical"
+        android:layout_marginLeft="6dp"
+        android:layout_marginRight="72dp"
         android:orientation="vertical"
-        android:background="@drawable/bubble_incoming"
-        android:visibility="gone">
+        android:background="@drawable/bubble_incoming">
 
         <TextView
             android:id="@+id/tv_sender_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/wa_link"
+            android:textColor="#53BDEB"
             android:textSize="12sp"
             android:textStyle="bold"
+            android:paddingBottom="2dp"
             android:visibility="gone" />
 
         <TextView
@@ -41,22 +39,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:paddingTop="1dp"
+            android:paddingTop="2dp"
             android:textColor="@color/wa_text_meta"
             android:textSize="11sp" />
     </LinearLayout>
 
-    <!-- OUTGOING bubble (right-aligned) -->
+    <!-- OUTGOING bubble — right aligned -->
     <LinearLayout
         android:id="@+id/layout_bubble_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginLeft="64dp"
-        android:layout_marginRight="4dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginLeft="72dp"
+        android:layout_marginRight="6dp"
         android:orientation="vertical"
-        android:background="@drawable/bubble_outgoing"
-        android:visibility="gone">
+        android:background="@drawable/bubble_outgoing">
 
         <TextView
             android:id="@+id/tv_text_out"
@@ -66,14 +63,13 @@
             android:textSize="15sp"
             android:lineSpacingExtra="1dp" />
 
-        <!-- Time + tick row -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingTop="1dp">
+            android:paddingTop="2dp">
 
             <TextView
                 android:id="@+id/tv_time_out"
@@ -93,4 +89,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

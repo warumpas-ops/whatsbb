@@ -87,6 +87,20 @@ public class ApiClient {
         return new JSONObject(resp);
     }
 
+    public static List<ContactModel> getContacts(String baseUrl) throws Exception {
+        String resp = get(baseUrl + "/api/contacts");
+        JSONObject json = new JSONObject(resp);
+        JSONArray arr = json.optJSONArray("contacts");
+        List<ContactModel> list = new ArrayList<ContactModel>();
+        if (arr != null) {
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject obj = arr.getJSONObject(i);
+                list.add(new ContactModel(obj.optString("jid"), obj.optString("name")));
+            }
+        }
+        return list;
+    }
+
     public static List<ChatModel> getChats(String baseUrl) throws Exception {
         String resp = get(baseUrl + "/api/chats");
         JSONObject json = new JSONObject(resp);

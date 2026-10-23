@@ -149,12 +149,56 @@ public class MainActivity extends Activity {
     }
 
     private void showNewChatDialog() {
+        new AsyncTask<Void, Void, List<ContactModel>>() {
+            @Override
+            protected List<ContactModel> doInBackground(Void... p) {
+                try {
+                    return ApiClient.getContacts(prefs.getServerUrl());
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(final List<ContactModel> contacts) {
+                if (contacts == null || contacts.isEmpty()) {
+                    showCustomNumberDialog();
+                    return;
+                }
+
+                List<String> items = new ArrayList<String>();
+                items.add("➕ Enter phone number...");
+                for (ContactModel c : contacts) {
+                    items.add(c.getName() + " (" + c.getJid().split("@")[0] + ")");
+                }
+
+                final CharSequence[] charItems = items.toArray(new CharSequence[items.size()]);
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("New Chat");
+                builder.setItems(charItems, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            showCustomNumberDialog();
+                        } else {
+                            ContactModel selected = contacts.get(which - 1);
+                            openChat(selected.getJid(), selected.getName());
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+            }
+        }.execute();
+    }
+
+    private void showCustomNumberDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New Chat");
-        builder.setMessage("Enter phone number with country code (e.g. 447700900000):");
+        builder.setTitle("Enter Phone Number");
+        builder.setMessage("Enter number with country code (e.g. 213775406221):");
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_PHONE);
-        input.setHint("+447700900000");
+        input.setHint("+213775406221");
         input.setTextColor(Color.WHITE);
         builder.setView(input);
         builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {

@@ -4,6 +4,7 @@ app/build/
 local.properties
 server/node_modules/
 server/auth_info/
+server/data/
 *.apk
 .idea/
 *.iml
