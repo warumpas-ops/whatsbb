@@ -207,10 +207,10 @@ public class MainActivity extends Activity {
     private void showCustomNumberDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Phone number");
-        builder.setMessage("Enter with country code (e.g. 213775406221):");
+        builder.setMessage("Enter phone number with country code (e.g. 14155552671):");
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_PHONE);
-        input.setHint("213775406221");
+        input.setHint("14155552671");
         input.setTextColor(Color.WHITE);
         builder.setView(input);
         builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {

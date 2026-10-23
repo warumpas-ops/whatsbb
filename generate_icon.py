@@ -49,7 +49,8 @@ def draw_minimalist_icon(size):
     img = Image.alpha_composite(img, phone_layer)
     return img.resize((size, size), Image.Resampling.LANCZOS)
 
-res_dir = r"C:\Users\Growth\.gemini\antigravity\scratch\whatsbb\app\src\main\res"
+import os
+res_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app", "src", "main", "res")
 sizes = {
     "drawable": 96,
     "drawable-mdpi": 48,

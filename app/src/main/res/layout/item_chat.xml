@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  WhatsBB v1.7 Chat Row
+  ──────────────────────
+  80dp tall, avatar-dominant, clean hierarchy
+  Name bold white, preview #333333 (barely visible = clean)
+  Time top-right in #222222
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="78dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
     android:background="@drawable/chat_row_selector">
 
-    <!-- Avatar -->
+    <!-- Avatar — dominant, 52dp -->
     <FrameLayout
         android:id="@+id/layout_avatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp">
+        android:layout_width="52dp"
+        android:layout_height="52dp">
 
         <ImageView
             android:id="@+id/iv_avatar"
@@ -27,19 +34,19 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textColor="#FFFFFF"
-            android:textSize="19sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
     </FrameLayout>
 
-    <!-- Content -->
+    <!-- Text block -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="14dp">
+        android:layout_marginLeft="15dp">
 
-        <!-- Name + Time -->
+        <!-- Row 1: Name + Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +58,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="#FFFFFF"
+                android:textColor="#EEEEEE"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:singleLine="true"
@@ -61,23 +68,24 @@
                 android:id="@+id/tv_chat_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#353535"
-                android:textSize="11sp" />
+                android:textColor="#252525"
+                android:textSize="11sp"
+                android:layout_marginLeft="8dp" />
         </LinearLayout>
 
-        <!-- Preview + badge -->
+        <!-- Row 2: Preview + badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginTop="3dp">
+            android:layout_marginTop="4dp">
 
             <TextView
                 android:id="@+id/tv_preview_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#333333"
+                android:textColor="#282828"
                 android:textSize="11sp"
                 android:layout_marginRight="3dp"
                 android:visibility="gone" />
@@ -87,7 +95,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="#3A3A3A"
+                android:textColor="#2C2C2C"
                 android:textSize="13sp"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -96,6 +104,7 @@
                 android:id="@+id/tv_unread_badge"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:layout_marginLeft="8dp"
                 android:background="@drawable/badge_unread"
                 android:gravity="center"
                 android:textColor="#000000"
