@@ -2,13 +2,6 @@ package com.whatsbb.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Shader;
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,17 +12,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,13 +43,7 @@ public class ChatActivity extends Activity {
     private boolean isSending = false;
     private int lastMessageCount = 0;
 
-    private static final int[] AVATAR_COLORS = {
-        0xFF1A2744, 0xFF1A2E1A, 0xFF2E1A1A, 0xFF1A2833,
-        0xFF2C1A2E, 0xFF2E2614, 0xFF0F2E2C, 0xFF2B1C0F
-    };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
@@ -82,29 +62,6 @@ public class ChatActivity extends Activity {
         btnSend = (TextView) findViewById(R.id.btn_send);
 
         tvThreadName.setText(chatName);
-        if (jid != null && jid.endsWith("@g.us")) {
-            tvThreadStatus.setText("group");
-        }
-
-        // Set header avatar
-        FrameLayout avatarFrame = (FrameLayout) findViewById(R.id.layout_chat_avatar);
-        final ImageView ivAvatar = (ImageView) findViewById(R.id.iv_chat_avatar);
-        final TextView avatarLetter = (TextView) findViewById(R.id.tv_chat_avatar_letter);
-
-        if (chatName != null && !chatName.isEmpty()) {
-            avatarLetter.setText(chatName.substring(0, 1).toUpperCase(Locale.getDefault()));
-        }
-        if (jid != null) {
-            int colorIdx = Math.abs(jid.hashCode()) % AVATAR_COLORS.length;
-            GradientDrawable avatarBg = new GradientDrawable();
-            avatarBg.setShape(GradientDrawable.OVAL);
-            avatarBg.setColor(AVATAR_COLORS[colorIdx]);
-            avatarBg.setStroke(1, ThemeManager.DIVIDER);
-            avatarFrame.setBackgroundDrawable(avatarBg);
-        }
-
-        // Load profile picture for this chat
-        loadHeaderPfp(ivAvatar, avatarLetter);
 
         adapter = new MessageAdapter(this, messageList);
         listMessages.setAdapter(adapter);
@@ -180,52 +137,6 @@ public class ChatActivity extends Activity {
         super.onPause();
         isPaused = true;
         pollHandler.removeCallbacks(pollRunnable);
-    }
-
-    private void loadHeaderPfp(final ImageView ivAvatar, final TextView avatarLetter) {
-        if (jid == null) return;
-        new AsyncTask<Void, Void, Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... p) {
-                try {
-                    String encodedJid = URLEncoder.encode(jid, "UTF-8");
-                    URL url = new URL(prefs.getServerUrl() + "/api/profile-picture?jid=" + encodedJid);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(5000);
-                    conn.setReadTimeout(6000);
-                    conn.setInstanceFollowRedirects(true);
-                    if (conn.getResponseCode() == 200) {
-                        InputStream is = conn.getInputStream();
-                        Bitmap bmp = BitmapFactory.decodeStream(is);
-                        is.close();
-                        conn.disconnect();
-                        return bmp;
-                    }
-                    conn.disconnect();
-                } catch (Exception ignored) {}
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bmp) {
-                if (bmp != null) {
-                    ivAvatar.setImageBitmap(toCircle(bmp));
-                    ivAvatar.setVisibility(View.VISIBLE);
-                    avatarLetter.setVisibility(View.GONE);
-                }
-            }
-        }.execute();
-    }
-
-    private Bitmap toCircle(Bitmap src) {
-        int sz = Math.min(src.getWidth(), src.getHeight());
-        Bitmap out = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(out);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        BitmapShader shader = new BitmapShader(src, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        paint.setShader(shader);
-        canvas.drawCircle(sz / 2f, sz / 2f, sz / 2f, paint);
-        return out;
     }
 
     private void sendMessage() {

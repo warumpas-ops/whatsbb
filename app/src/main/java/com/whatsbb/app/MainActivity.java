@@ -5,13 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Shader;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,8 +18,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -34,18 +26,11 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-
 public class MainActivity extends Activity {
     private PreferencesManager prefs;
     private ListView listChats;
@@ -63,12 +48,6 @@ public class MainActivity extends Activity {
     private Runnable autoRefreshRunnable;
     private boolean isPaused = false;
     private String currentStatus = "DISCONNECTED";
-
-    // Avatar color palette — distinct muted tones
-    private static final int[] AVATAR_COLORS = {
-        0xFF1A2744, 0xFF1A2E1A, 0xFF2E1A1A, 0xFF1A2833,
-        0xFF2C1A2E, 0xFF2E2614, 0xFF0F2E2C, 0xFF2B1C0F
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -338,9 +317,6 @@ public class MainActivity extends Activity {
         private final LayoutInflater inflater;
         private final SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
         private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM", Locale.getDefault());
-        // In-memory bitmap cache keyed by JID
-        private final Map<String, Bitmap> pfpCache = new HashMap<String, Bitmap>();
-        private final Map<String, Boolean> pfpLoading = new HashMap<String, Boolean>();
 
         ChatAdapter(Context context, List<ChatModel> items) {
             this.context = context;
@@ -358,13 +334,8 @@ public class MainActivity extends Activity {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.item_chat, parent, false);
                 h = new ViewHolder();
-                h.layoutAvatar = (FrameLayout) convertView.findViewById(R.id.layout_avatar);
-                h.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-                h.tvAvatarLetter = (TextView) convertView.findViewById(R.id.tv_avatar_letter);
                 h.tvName = (TextView) convertView.findViewById(R.id.tv_chat_name);
                 h.tvTime = (TextView) convertView.findViewById(R.id.tv_chat_time);
-                h.tvPreviewTicks = (TextView) convertView.findViewById(R.id.tv_preview_ticks);
-                h.tvLastMsg = (TextView) convertView.findViewById(R.id.tv_chat_last_msg);
                 h.tvBadge = (TextView) convertView.findViewById(R.id.tv_unread_badge);
                 convertView.setTag(h);
             } else {
@@ -372,42 +343,9 @@ public class MainActivity extends Activity {
             }
 
             final ChatModel chat = items.get(position);
-            final String jid = chat.getId();
-
-            // Avatar background circle
-            String name = chat.getName();
-            String letter = (name != null && !name.isEmpty()) ? name.substring(0, 1).toUpperCase(Locale.getDefault()) : "?";
-            h.tvAvatarLetter.setText(letter);
-            int colorIdx = Math.abs(jid.hashCode()) % AVATAR_COLORS.length;
-            GradientDrawable bg = new GradientDrawable();
-            bg.setShape(GradientDrawable.OVAL);
-            bg.setColor(AVATAR_COLORS[colorIdx]);
-            bg.setStroke(1, ThemeManager.DIVIDER);
-            h.layoutAvatar.setBackgroundDrawable(bg);
-
-            // Profile picture
-            Bitmap cached = pfpCache.get(jid);
-            if (cached != null) {
-                h.ivAvatar.setImageBitmap(toCircle(cached));
-                h.ivAvatar.setVisibility(View.VISIBLE);
-                h.tvAvatarLetter.setVisibility(View.GONE);
-            } else {
-                h.ivAvatar.setVisibility(View.GONE);
-                h.tvAvatarLetter.setVisibility(View.VISIBLE);
-                // Load async only once
-                if (pfpLoading.get(jid) == null) {
-                    pfpLoading.put(jid, true);
-                    loadPfp(jid, h);
-                }
-            }
 
             // Name
-            h.tvName.setText(name);
-
-            // Last message
-            String preview = chat.getLastMessage();
-            h.tvLastMsg.setText(preview != null ? preview : "");
-            if (h.tvPreviewTicks != null) h.tvPreviewTicks.setVisibility(View.GONE);
+            h.tvName.setText(chat.getName());
 
             // Time
             if (chat.getTimestamp() > 0) {
@@ -419,70 +357,15 @@ public class MainActivity extends Activity {
             }
 
             // Red unread dot
-            if (chat.getUnread() > 0) {
-                if (h.tvBadge != null) {
-                    h.tvBadge.setVisibility(View.VISIBLE);
-                    h.tvBadge.setText("");
-                }
-            } else {
-                if (h.tvBadge != null) {
-                    h.tvBadge.setVisibility(View.GONE);
-                }
+            if (h.tvBadge != null) {
+                h.tvBadge.setVisibility(chat.getUnread() > 0 ? View.VISIBLE : View.GONE);
             }
 
             return convertView;
         }
 
-        private void loadPfp(final String jid, final ViewHolder holder) {
-            new AsyncTask<Void, Void, Bitmap>() {
-                @Override
-                protected Bitmap doInBackground(Void... p) {
-                    try {
-                        String encodedJid = URLEncoder.encode(jid, "UTF-8");
-                        URL url = new URL(prefs.getServerUrl() + "/api/profile-picture?jid=" + encodedJid);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setConnectTimeout(5000);
-                        conn.setReadTimeout(6000);
-                        conn.setInstanceFollowRedirects(true);
-                        if (conn.getResponseCode() == 200) {
-                            InputStream is = conn.getInputStream();
-                            Bitmap bmp = BitmapFactory.decodeStream(is);
-                            is.close();
-                            conn.disconnect();
-                            return bmp;
-                        }
-                        conn.disconnect();
-                    } catch (Exception ignored) {}
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Bitmap bmp) {
-                    pfpLoading.remove(jid);
-                    if (bmp != null) {
-                        pfpCache.put(jid, bmp);
-                        notifyDataSetChanged();
-                    }
-                }
-            }.execute();
-        }
-
-        /** Crop bitmap to circle */
-        private Bitmap toCircle(Bitmap src) {
-            int sz = Math.min(src.getWidth(), src.getHeight());
-            Bitmap out = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(out);
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            BitmapShader shader = new BitmapShader(src, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            paint.setShader(shader);
-            canvas.drawCircle(sz / 2f, sz / 2f, sz / 2f, paint);
-            return out;
-        }
-
         private class ViewHolder {
-            FrameLayout layoutAvatar;
-            ImageView ivAvatar;
-            TextView tvAvatarLetter, tvName, tvTime, tvPreviewTicks, tvLastMsg, tvBadge;
+            TextView tvName, tvTime, tvBadge;
         }
     }
 }
