@@ -3,45 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/wa_bg">
+    android:background="#101113">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="48dp"
         android:orientation="horizontal"
-        android:background="@color/wa_header"
+        android:background="#101113"
         android:gravity="center_vertical"
-        android:paddingLeft="4dp"
-        android:paddingRight="8dp">
+        android:paddingLeft="12dp"
+        android:paddingRight="16dp">
 
         <TextView
             android:id="@+id/btn_qr_back"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:gravity="center"
-            android:textColor="@color/wa_text"
-            android:textSize="22sp"
+            android:layout_width="36dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textColor="#555A64"
+            android:textSize="20sp"
             android:text="&#8592;" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Link a Device"
-            android:textColor="@color/wa_text"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="4dp" />
+            android:text="link device"
+            android:textColor="#E0E2E6"
+            android:textSize="16sp"
+            android:layout_marginLeft="6dp" />
 
         <TextView
             android:id="@+id/btn_qr_settings"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="18sp"
-            android:text="&#8942;" />
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A1C20" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -53,32 +54,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:padding="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/wa_text"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="Scan this code" />
+                android:textColor="#555A64"
+                android:textSize="12sp"
+                android:letterSpacing="0.05"
+                android:text="qr code" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/wa_text_sub"
-                android:textSize="13sp"
+                android:textColor="#424650"
+                android:textSize="12sp"
                 android:gravity="center"
                 android:layout_marginTop="6dp"
-                android:lineSpacingExtra="3dp"
-                android:text="Open WhatsApp on your phone\nSettings > Linked Devices > Link a Device" />
+                android:lineSpacingExtra="2dp"
+                android:text="WhatsApp > Linked Devices > Link a Device" />
 
             <FrameLayout
                 android:layout_width="220dp"
                 android:layout_height="220dp"
                 android:layout_marginTop="20dp"
-                android:background="#ffffff"
+                android:background="#FFFFFF"
                 android:padding="8dp">
 
                 <ImageView
@@ -98,8 +99,8 @@
                 android:id="@+id/tv_qr_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/wa_teal"
-                android:textSize="14sp"
+                android:textColor="#555A64"
+                android:textSize="13sp"
                 android:gravity="center"
                 android:layout_marginTop="16dp"
                 android:text="Waiting for QR code..." />
@@ -110,11 +111,9 @@
                 android:layout_height="36dp"
                 android:gravity="center"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/input_bg"
-                android:textColor="@color/wa_text_sub"
-                android:text="Reload QR"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp" />
+                android:textColor="#A0A4AD"
+                android:textSize="13sp"
+                android:text="[reload QR]" />
 
         </LinearLayout>
     </ScrollView>

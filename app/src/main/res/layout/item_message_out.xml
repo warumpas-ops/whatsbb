@@ -28,7 +28,7 @@
             android:id="@+id/tv_time_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#424650"
+            android:textColor="#555A64"
             android:textSize="10sp" />
 
         <TextView

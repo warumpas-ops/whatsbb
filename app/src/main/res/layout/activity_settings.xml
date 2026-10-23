@@ -91,8 +91,8 @@
                     android:id="@+id/btn_test_connection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="[test]"
-                    android:textColor="#555A64"
+                    android:text="[test connection]"
+                    android:textColor="#A0A4AD"
                     android:textSize="13sp" />
             </LinearLayout>
 
@@ -116,7 +116,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="session"
+                android:text="account"
                 android:textColor="#555A64"
                 android:textSize="12sp"
                 android:letterSpacing="0.05" />
@@ -124,18 +124,18 @@
             <TextView
                 android:id="@+id/btn_link_qr"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="36dp"
                 android:gravity="center_vertical"
-                android:text="> scan qr code to pair"
+                android:text="[scan QR code]"
                 android:textColor="#A0A4AD"
                 android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/btn_logout"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="36dp"
                 android:gravity="center_vertical"
-                android:text="> unlink / log out"
+                android:text="[log out]"
                 android:textColor="#EF4444"
                 android:textSize="13sp" />
 

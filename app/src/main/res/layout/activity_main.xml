@@ -20,8 +20,8 @@
             android:id="@+id/list_chats"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@null"
-            android:dividerHeight="0dp"
+            android:divider="@drawable/divider_line"
+            android:dividerHeight="1dp"
             android:scrollbars="none" />
 
         <TextView
