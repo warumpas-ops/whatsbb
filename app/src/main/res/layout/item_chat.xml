@@ -15,7 +15,8 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textColor="#E0E2E6"
-        android:textSize="15sp"
+        android:textSize="14sp"
+        android:typeface="monospace"
         android:singleLine="true"
         android:ellipsize="end" />
 
@@ -25,7 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#555A64"
-        android:textSize="12sp"
+        android:textSize="11sp"
+        android:typeface="monospace"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="8dp" />
 

@@ -31,6 +31,7 @@
             android:gravity="center"
             android:textColor="#3D414A"
             android:textSize="13sp"
+            android:typeface="monospace"
             android:text="no conversations"
             android:visibility="gone" />
 
@@ -66,6 +67,7 @@
             android:gravity="center_vertical"
             android:textColor="#A0A4AD"
             android:textSize="13sp"
+            android:typeface="monospace"
             android:text="[+] new" />
 
         <View
@@ -81,6 +83,7 @@
             android:gravity="center_vertical"
             android:textColor="#555A64"
             android:textSize="13sp"
+            android:typeface="monospace"
             android:text="settings" />
     </LinearLayout>
 

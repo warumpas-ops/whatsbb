@@ -21,7 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#E0E2E6"
-        android:textSize="14sp"
+        android:textSize="13sp"
+        android:typeface="monospace"
         android:lineSpacingExtra="2dp" />
 
     <TextView
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
         android:textColor="#555A64"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:typeface="monospace" />
 
 </LinearLayout>

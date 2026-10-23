@@ -22,6 +22,7 @@
             android:gravity="center_vertical"
             android:textColor="#555A64"
             android:textSize="20sp"
+            android:typeface="monospace"
             android:text="&#8592;" />
 
         <TextView
@@ -30,7 +31,8 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:textColor="#E0E2E6"
-            android:textSize="16sp"
+            android:textSize="15sp"
+            android:typeface="monospace"
             android:singleLine="true"
             android:ellipsize="end" />
 
@@ -72,6 +74,7 @@
             android:gravity="center"
             android:textColor="#3D414A"
             android:textSize="13sp"
+            android:typeface="monospace"
             android:text="no messages"
             android:visibility="gone" />
     </FrameLayout>
@@ -108,7 +111,8 @@
             android:textColor="#E0E2E6"
             android:textColorHint="#424650"
             android:hint="Type a message..."
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:typeface="monospace"
             android:imeOptions="actionSend"
             android:inputType="textCapSentences|textMultiLine" />
 
@@ -119,6 +123,7 @@
             android:gravity="center"
             android:textColor="#A0A4AD"
             android:textSize="16sp"
+            android:typeface="monospace"
             android:text="&#8593;" />
     </LinearLayout>
 
