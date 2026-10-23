@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Real WhatsApp style — dark header, clean list, no boxy "card" feel -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/wa_bg">
 
-    <!-- Header — real WA proportions, no buttons with emoji -->
+    <!-- Top WhatsApp Bar -->
     <LinearLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
         android:orientation="horizontal"
         android:background="@color/wa_header"
         android:gravity="center_vertical"
@@ -26,36 +25,28 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <!-- Status dot (tiny, inline with title) -->
+        <!-- Status indicator dot (small) -->
         <View
             android:id="@+id/view_status_dot"
             android:layout_width="8dp"
             android:layout_height="8dp"
-            android:layout_marginRight="4dp"
+            android:layout_marginRight="6dp"
             android:background="@drawable/badge_unread" />
 
-        <!-- Header action buttons as text, not emoji -->
+        <!-- Refresh action -->
         <TextView
             android:id="@+id/btn_refresh"
-            android:layout_width="44dp"
+            android:layout_width="40dp"
             android:layout_height="44dp"
             android:gravity="center"
             android:textColor="@color/wa_text_sub"
             android:textSize="20sp"
             android:text="&#8635;" />
 
-        <TextView
-            android:id="@+id/btn_new_chat"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="24sp"
-            android:text="&#43;" />
-
+        <!-- Settings / Overflow Menu -->
         <TextView
             android:id="@+id/btn_settings"
-            android:layout_width="44dp"
+            android:layout_width="40dp"
             android:layout_height="44dp"
             android:gravity="center"
             android:textColor="@color/wa_text_sub"
@@ -63,13 +54,119 @@
             android:text="&#8942;" />
     </LinearLayout>
 
-    <!-- Status banner (only visible when not connected) -->
+    <!-- Classic WhatsApp Tab Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:orientation="horizontal"
+        android:background="@color/wa_header">
+
+        <!-- CHATS TAB (Active) -->
+        <LinearLayout
+            android:id="@+id/tab_chats"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tv_tab_chats_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CHATS"
+                    android:textColor="@color/wa_tab_active"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_tab_badge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="16dp"
+                    android:minWidth="16dp"
+                    android:layout_marginLeft="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:background="@drawable/badge_unread"
+                    android:gravity="center"
+                    android:textColor="#0B141B"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Active tab indicator line -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/wa_tab_active" />
+        </LinearLayout>
+
+        <!-- STATUS TAB -->
+        <LinearLayout
+            android:id="@+id/tab_status"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="STATUS"
+                android:textColor="@color/wa_tab_inactive"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#00000000" />
+        </LinearLayout>
+
+        <!-- CALLS TAB -->
+        <LinearLayout
+            android:id="@+id/tab_calls"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="CALLS"
+                android:textColor="@color/wa_tab_inactive"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#00000000" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Disconnected Banner (only shows when offline) -->
     <LinearLayout
         android:id="@+id/layout_status_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#1A2E38"
+        android:background="#1F2C34"
         android:paddingLeft="16dp"
         android:paddingRight="12dp"
         android:paddingTop="9dp"
@@ -79,8 +176,8 @@
 
         <View
             android:id="@+id/banner_dot"
-            android:layout_width="7dp"
-            android:layout_height="7dp"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
             android:layout_marginRight="9dp"
             android:background="@drawable/badge_unread" />
 
@@ -103,7 +200,7 @@
             android:text="PAIR" />
     </LinearLayout>
 
-    <!-- Chat list -->
+    <!-- Chats List Area with Floating Action Button -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -114,7 +211,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@color/wa_divider"
-            android:dividerHeight="1dp"
+            android:dividerHeight="0.8dp"
             android:scrollbars="none" />
 
         <TextView
@@ -125,7 +222,7 @@
             android:textColor="@color/wa_text_sub"
             android:textSize="14sp"
             android:lineSpacingExtra="4dp"
-            android:text="No chats yet.\nTap + or refresh."
+            android:text="No conversations yet.\nTap the green button to start a chat."
             android:visibility="gone" />
 
         <ProgressBar
@@ -134,6 +231,26 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
+        <!-- Floating Action Button (FAB) — Real WhatsApp New Chat Button -->
+        <FrameLayout
+            android:id="@+id/btn_new_chat"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/btn_fab">
+
+            <!-- Chat icon (speech bubble shape) -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:text="&#9993;" />
+        </FrameLayout>
     </FrameLayout>
 
 </LinearLayout>

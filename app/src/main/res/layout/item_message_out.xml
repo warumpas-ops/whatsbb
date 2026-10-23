@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Outgoing bubble — full-width row, bubble right-aligned -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp"
-    android:paddingLeft="72dp"
-    android:paddingRight="6dp"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:paddingLeft="64dp"
+    android:paddingRight="4dp"
     android:orientation="vertical"
     android:gravity="right">
 
@@ -39,12 +38,13 @@
                 android:textColor="@color/wa_text_meta"
                 android:textSize="11sp" />
 
+            <!-- Double blue checks -->
             <TextView
                 android:id="@+id/tv_status_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:textColor="#53BDEB"
+                android:layout_marginLeft="4dp"
+                android:textColor="@color/wa_ticks_blue"
                 android:textSize="12sp"
                 android:text="&#10003;&#10003;" />
         </LinearLayout>

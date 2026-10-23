@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Real WhatsApp dark theme palette -->
-    <color name="wa_bg">#111B21</color>
-    <color name="wa_header">#202C33</color>
-    <color name="wa_panel">#202C33</color>
+    <!-- Real WhatsApp Dark Mode Theme Palette -->
+    <color name="wa_bg">#0B141B</color>
+    <color name="wa_chat_bg">#0B141A</color>
+    <color name="wa_header">#1F2C34</color>
+    <color name="wa_panel">#1F2C34</color>
     <color name="wa_pressed">#2A3942</color>
-    <color name="wa_divider">#1F2C34</color>
+    <color name="wa_divider">#182229</color>
 
-    <!-- WhatsApp teal accent -->
+    <!-- WhatsApp teal & green accents -->
     <color name="wa_teal">#00A884</color>
     <color name="wa_teal_dark">#017561</color>
     <color name="wa_icon_teal">#00A884</color>
+    <color name="wa_green_accent">#25D366</color>
+    <color name="wa_fab">#00A884</color>
+    <color name="wa_fab_pressed">#029070</color>
 
     <!-- Message bubbles -->
-    <color name="wa_bubble_in">#202C33</color>
+    <color name="wa_bubble_in">#1F2C34</color>
     <color name="wa_bubble_out">#005C4B</color>
 
     <!-- Text -->
@@ -21,11 +25,16 @@
     <color name="wa_text_sub">#8696A0</color>
     <color name="wa_text_meta">#667781</color>
     <color name="wa_link">#53BDEB</color>
+    <color name="wa_ticks_blue">#53BDEB</color>
+    <color name="wa_ticks_gray">#8696A0</color>
 
-    <!-- Unread badge -->
+    <!-- Badges & Tabs -->
     <color name="wa_badge">#00A884</color>
+    <color name="wa_tab_active">#00A884</color>
+    <color name="wa_tab_inactive">#8696A0</color>
 
     <!-- Input bar -->
+    <color name="wa_input_pill">#1F2C34</color>
     <color name="wa_input_bg">#2A3942</color>
 
     <!-- Status colors -->

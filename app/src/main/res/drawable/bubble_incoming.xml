@@ -4,8 +4,12 @@
     <solid android:color="@color/wa_bubble_in" />
     <corners
         android:topLeftRadius="2dp"
-        android:topRightRadius="8dp"
-        android:bottomRightRadius="8dp"
-        android:bottomLeftRadius="8dp" />
-    <padding android:left="9dp" android:top="6dp" android:right="9dp" android:bottom="4dp" />
+        android:topRightRadius="14dp"
+        android:bottomRightRadius="14dp"
+        android:bottomLeftRadius="14dp" />
+    <padding
+        android:left="11dp"
+        android:top="7dp"
+        android:right="11dp"
+        android:bottom="6dp" />
 </shape>

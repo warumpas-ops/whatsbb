@@ -346,6 +346,7 @@ public class MainActivity extends Activity {
                 h.tvAvatarLetter = (TextView) convertView.findViewById(R.id.tv_avatar_letter);
                 h.tvName = (TextView) convertView.findViewById(R.id.tv_chat_name);
                 h.tvTime = (TextView) convertView.findViewById(R.id.tv_chat_time);
+                h.tvPreviewTicks = (TextView) convertView.findViewById(R.id.tv_preview_ticks);
                 h.tvLastMsg = (TextView) convertView.findViewById(R.id.tv_chat_last_msg);
                 h.tvBadge = (TextView) convertView.findViewById(R.id.tv_unread_badge);
                 convertView.setTag(h);
@@ -368,9 +369,12 @@ public class MainActivity extends Activity {
             // Name
             h.tvName.setText(name);
 
-            // Last message — show "You: " prefix if from self
+            // Last message
             String preview = chat.getLastMessage();
             h.tvLastMsg.setText(preview != null ? preview : "");
+            if (h.tvPreviewTicks != null) {
+                h.tvPreviewTicks.setVisibility(View.GONE);
+            }
 
             // Time
             if (chat.getTimestamp() > 0) {
@@ -397,7 +401,7 @@ public class MainActivity extends Activity {
 
         private class ViewHolder {
             FrameLayout layoutAvatar;
-            TextView tvAvatarLetter, tvName, tvTime, tvLastMsg, tvBadge;
+            TextView tvAvatarLetter, tvName, tvTime, tvPreviewTicks, tvLastMsg, tvBadge;
         }
     }
 }
