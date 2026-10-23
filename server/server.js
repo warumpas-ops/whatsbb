@@ -88,56 +88,98 @@ function broadcastSSE(event, data) {
   });
 }
 
+const lidMap = new Map(); // lid -> phone JID
+
+// ─── Resolve and Normalize JIDs ──────────────────────────────────────────────
+function normalizeJid(jid) {
+  if (!jid) return jid;
+  if (jid.endsWith('@lid')) {
+    const myLidNum = sock?.user?.lid ? sock.user.lid.split(':')[0] : null;
+    if (myLidNum && jid.startsWith(myLidNum)) {
+      const myPhone = sock?.user?.id ? sock.user.id.split(':')[0] : null;
+      return myPhone ? myPhone + '@s.whatsapp.net' : jid;
+    }
+    return lidMap.get(jid) || jid;
+  }
+  return jid;
+}
+
 // ─── Extract readable text from any WA message ───────────────────────────────
 function extractText(rawMsg) {
   if (!rawMsg) return '';
 
-  let msgContent = rawMsg.message || rawMsg;
+  let m = rawMsg.message || rawMsg;
+
+  // Recursively unwrap known container messages
+  for (let depth = 0; depth < 5 && m; depth++) {
+    if (m.ephemeralMessage?.message) m = m.ephemeralMessage.message;
+    else if (m.viewOnceMessage?.message) m = m.viewOnceMessage.message;
+    else if (m.viewOnceMessageV2?.message) m = m.viewOnceMessageV2.message;
+    else if (m.viewOnceMessageV2Extension?.message) m = m.viewOnceMessageV2Extension.message;
+    else if (m.documentWithCaptionMessage?.message) m = m.documentWithCaptionMessage.message;
+    else if (m.editedMessage?.message?.protocolMessage?.editedMessage) m = m.editedMessage.message.protocolMessage.editedMessage;
+    else break;
+  }
 
   try {
-    const extracted = extractMessageContent(msgContent);
-    if (extracted) msgContent = extracted;
+    const extracted = extractMessageContent(m);
+    if (extracted) m = extracted;
   } catch (e) {}
 
-  if (!msgContent) return '';
+  if (!m) return '';
 
-  if (
-    msgContent.protocolMessage ||
-    msgContent.senderKeyDistributionMessage ||
-    msgContent.messageContextInfo ||
-    msgContent.reactionMessage ||
-    msgContent.pollUpdateMessage ||
-    msgContent.appStateSyncKeyShare ||
-    msgContent.callLogMesssage
-  ) return '';
-
-  if (typeof msgContent.conversation === 'string' && msgContent.conversation.trim()) {
-    return msgContent.conversation.trim();
+  // 1. Text & Conversation
+  if (typeof m.conversation === 'string' && m.conversation.trim()) {
+    return m.conversation.trim();
   }
-  if (msgContent.extendedTextMessage?.text) return msgContent.extendedTextMessage.text.trim();
-  if (msgContent.imageMessage?.caption) return '📷 ' + msgContent.imageMessage.caption.trim();
-  if (msgContent.imageMessage) return '📷 Photo';
-  if (msgContent.videoMessage?.caption) return '🎥 ' + msgContent.videoMessage.caption.trim();
-  if (msgContent.videoMessage) return '🎥 Video';
-  if (msgContent.audioMessage) return '🎤 Voice note';
-  if (msgContent.stickerMessage) return '🎭 Sticker';
-  if (msgContent.documentMessage) return '📄 ' + (msgContent.documentMessage.fileName || 'Document');
-  if (msgContent.contactMessage?.displayName) return '👤 ' + msgContent.contactMessage.displayName;
-  if (msgContent.locationMessage) return '📍 Location';
-  if (msgContent.pollCreationMessage) return '📊 ' + (msgContent.pollCreationMessage.name || 'Poll');
-  if (msgContent.listMessage) return '📋 ' + (msgContent.listMessage.title || 'List');
-  if (msgContent.buttonsMessage) return '📋 ' + (msgContent.buttonsMessage.contentText || 'Buttons');
-  if (msgContent.contactsArrayMessage) return '👥 Contacts';
-  if (msgContent.liveLocationMessage) return '📍 Live Location';
+  if (m.extendedTextMessage?.text && typeof m.extendedTextMessage.text === 'string' && m.extendedTextMessage.text.trim()) {
+    return m.extendedTextMessage.text.trim();
+  }
+
+  // 2. Media with optional caption
+  if (m.imageMessage) {
+    return m.imageMessage.caption ? '📷 ' + m.imageMessage.caption.trim() : '📷 Photo';
+  }
+  if (m.videoMessage) {
+    return m.videoMessage.caption ? '🎥 ' + m.videoMessage.caption.trim() : '🎥 Video';
+  }
+  if (m.audioMessage) {
+    return m.audioMessage.ptt ? '🎤 Voice note' : '🎵 Audio';
+  }
+  if (m.documentMessage) {
+    return '📄 ' + (m.documentMessage.fileName || m.documentMessage.title || 'Document');
+  }
+  if (m.stickerMessage) return '🎭 Sticker';
+  if (m.contactMessage?.displayName) return '👤 ' + m.contactMessage.displayName;
+  if (m.contactsArrayMessage) return '👥 Contacts';
+  if (m.locationMessage || m.liveLocationMessage) return '📍 Location';
+  if (m.pollCreationMessage?.name || m.pollCreationMessageV2?.name || m.pollCreationMessageV3?.name) {
+    const name = m.pollCreationMessage?.name || m.pollCreationMessageV2?.name || m.pollCreationMessageV3?.name;
+    return '📊 ' + name;
+  }
+  if (m.reactionMessage?.text) return m.reactionMessage.text;
+
+  // 3. Buttons & Interactive
+  if (m.listMessage?.title || m.listMessage?.description) {
+    return '📋 ' + (m.listMessage.title || m.listMessage.description);
+  }
+  if (m.buttonsMessage?.contentText) {
+    return m.buttonsMessage.contentText;
+  }
 
   return '';
 }
 
 // ─── Resolve display name for a JID ──────────────────────────────────────────
-function resolveName(jid, pushName) {
-  if (!jid) return 'Unknown';
+function resolveName(rawJid, pushName) {
+  if (!rawJid) return 'Unknown';
+  const jid = normalizeJid(rawJid);
+  const myNum = sock?.user?.id ? sock.user.id.split(':')[0] : null;
+  if (myNum && jid.startsWith(myNum)) {
+    return 'You (Note to self)';
+  }
   const normalized = jidNormalizedUser(jid);
-  const contact = contactsMap.get(normalized);
+  const contact = contactsMap.get(normalized) || contactsMap.get(jid) || contactsMap.get(rawJid);
   if (contact?.name) return contact.name;
   if (pushName && pushName.trim()) return pushName.trim();
   const num = jid.split('@')[0];
@@ -355,6 +397,10 @@ async function startWhatsApp() {
         if (!c.id) continue;
         const name = c.name || c.notify || c.verifiedName;
         if (name) contactsMap.set(jidNormalizedUser(c.id), { name });
+        if (c.lid) {
+          lidMap.set(c.lid, c.id);
+          if (name) contactsMap.set(c.lid, { name });
+        }
       }
     }
 
@@ -362,8 +408,9 @@ async function startWhatsApp() {
     if (histChats) {
       for (const chat of histChats) {
         if (!chat.id || isJidBroadcast(chat.id)) continue;
-        upsertChat(chat.id, {
-          name: resolveName(chat.id, chat.name),
+        const jid = normalizeJid(chat.id);
+        upsertChat(jid, {
+          name: resolveName(jid, chat.name),
           timestamp: chat.conversationTimestamp ? Number(chat.conversationTimestamp) * 1000 : 0,
           unread: chat.unreadCount || 0
         });
@@ -375,8 +422,9 @@ async function startWhatsApp() {
       let imported = 0;
       for (const webMsg of histMsgs) {
         const msgInfo = webMsg.message ? webMsg.message : webMsg;
-        const jid = msgInfo?.key?.remoteJid;
-        if (!jid || isJidBroadcast(jid)) continue;
+        const rawJid = msgInfo?.key?.remoteJid;
+        if (!rawJid || isJidBroadcast(rawJid)) continue;
+        const jid = normalizeJid(rawJid);
 
         const text = extractText(msgInfo);
         if (!text) continue;
@@ -414,13 +462,14 @@ async function startWhatsApp() {
   // ─── Live Messages ────────────────────────────────────────────────────────
   sock.ev.on('messages.upsert', async ({ messages, type }) => {
     for (const msg of messages) {
-      const jid = msg.key?.remoteJid;
-      if (!jid || isJidBroadcast(jid)) continue;
+      const rawJid = msg.key?.remoteJid;
+      if (!rawJid || isJidBroadcast(rawJid)) continue;
       if (!msg.message) continue;
 
       const text = extractText(msg);
-      if (!text && type !== 'notify') continue;
+      if (!text) continue;
 
+      const jid = normalizeJid(rawJid);
       const fromMe = Boolean(msg.key.fromMe);
       const ts = msg.messageTimestamp;
       const timestamp = ts ? (typeof ts === 'object' && ts.toNumber
@@ -428,23 +477,20 @@ async function startWhatsApp() {
         : Date.now();
       const sender = fromMe ? 'You' : resolveName(jid, msg.pushName);
       const id = msg.key.id || (jid + '_' + timestamp);
-      const displayText = text || '📎';
 
-      upsertMsg(jid, { id, fromMe, text: displayText, timestamp, sender });
+      upsertMsg(jid, { id, fromMe, text, timestamp, sender });
       const currentUnread = chatsMap.get(jid)?.unread || 0;
       upsertChat(jid, {
         name: resolveName(jid, msg.pushName),
-        lastMessage: displayText,
+        lastMessage: text,
         timestamp,
         unread: fromMe ? currentUnread : currentUnread + 1
       });
 
-      console.log(`[WhatsBB] Live msg from ${sender} in ${jid}: "${displayText}"`);
+      console.log(`[WhatsBB] Live msg from ${sender} in ${jid}: "${text.substring(0, 50)}"`);
 
-      if (type === 'notify') {
-        broadcastSSE('message', { jid, message: { id, fromMe, text: displayText, timestamp, sender } });
-        broadcastSSE('chat_update', chatsMap.get(jid));
-      }
+      broadcastSSE('message', { jid, message: { id, fromMe, text, timestamp, sender } });
+      broadcastSSE('chat_update', chatsMap.get(jid));
     }
   });
 }
