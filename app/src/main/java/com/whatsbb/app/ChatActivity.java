@@ -2,6 +2,12 @@ package com.whatsbb.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,11 +20,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +44,7 @@ public class ChatActivity extends Activity {
     private ListView listMessages;
     private TextView tvChatEmpty;
     private EditText editMessage;
-    private FrameLayout btnSend;
+    private TextView btnSend;
     private TextView tvThreadName;
     private TextView tvThreadStatus;
 
@@ -44,12 +55,11 @@ public class ChatActivity extends Activity {
     private Runnable pollRunnable;
     private boolean isPaused = false;
     private boolean isSending = false;
-    // Track last known message count to avoid unnecessary scrolls
     private int lastMessageCount = 0;
 
     private static final int[] AVATAR_COLORS = {
-        0xFF1E1E1E, 0xFF242424, 0xFF2A2A2A, 0xFF2F2F2F,
-        0xFF343434, 0xFF222222, 0xFF2D2D2D, 0xFF1A1A1A
+        0xFF1E2030, 0xFF1E2820, 0xFF2A1E22, 0xFF22201E,
+        0xFF1E2228, 0xFF281E26, 0xFF262020, 0xFF1E2624
     };
 
     @Override
@@ -69,16 +79,18 @@ public class ChatActivity extends Activity {
         listMessages = (ListView) findViewById(R.id.list_messages);
         tvChatEmpty = (TextView) findViewById(R.id.tv_chat_empty);
         editMessage = (EditText) findViewById(R.id.edit_message);
-        btnSend = (FrameLayout) findViewById(R.id.btn_send);
+        btnSend = (TextView) findViewById(R.id.btn_send);
 
         tvThreadName.setText(chatName);
         if (jid != null && jid.endsWith("@g.us")) {
-            tvThreadStatus.setText("Group · tap for info");
+            tvThreadStatus.setText("group");
         }
 
         // Set header avatar
         FrameLayout avatarFrame = (FrameLayout) findViewById(R.id.layout_chat_avatar);
-        TextView avatarLetter = (TextView) findViewById(R.id.tv_chat_avatar_letter);
+        final ImageView ivAvatar = (ImageView) findViewById(R.id.iv_chat_avatar);
+        final TextView avatarLetter = (TextView) findViewById(R.id.tv_chat_avatar_letter);
+
         if (chatName != null && !chatName.isEmpty()) {
             avatarLetter.setText(chatName.substring(0, 1).toUpperCase(Locale.getDefault()));
         }
@@ -87,9 +99,12 @@ public class ChatActivity extends Activity {
             GradientDrawable avatarBg = new GradientDrawable();
             avatarBg.setShape(GradientDrawable.OVAL);
             avatarBg.setColor(AVATAR_COLORS[colorIdx]);
-            avatarBg.setStroke(1, 0xFF383838);
+            avatarBg.setStroke(1, ThemeManager.DIVIDER);
             avatarFrame.setBackgroundDrawable(avatarBg);
         }
+
+        // Load profile picture for this chat
+        loadHeaderPfp(ivAvatar, avatarLetter);
 
         adapter = new MessageAdapter(this, messageList);
         listMessages.setAdapter(adapter);
@@ -148,7 +163,6 @@ public class ChatActivity extends Activity {
             }
         };
 
-        // Load immediately
         loadMessages(true);
     }
 
@@ -158,7 +172,6 @@ public class ChatActivity extends Activity {
         isPaused = false;
         loadMessages(false);
         pollHandler.postDelayed(pollRunnable, 2500);
-        // Auto-focus keyboard so user can start typing immediately
         editMessage.requestFocus();
     }
 
@@ -169,6 +182,52 @@ public class ChatActivity extends Activity {
         pollHandler.removeCallbacks(pollRunnable);
     }
 
+    private void loadHeaderPfp(final ImageView ivAvatar, final TextView avatarLetter) {
+        if (jid == null) return;
+        new AsyncTask<Void, Void, Bitmap>() {
+            @Override
+            protected Bitmap doInBackground(Void... p) {
+                try {
+                    String encodedJid = URLEncoder.encode(jid, "UTF-8");
+                    URL url = new URL(prefs.getServerUrl() + "/api/profile-picture?jid=" + encodedJid);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(6000);
+                    conn.setInstanceFollowRedirects(true);
+                    if (conn.getResponseCode() == 200) {
+                        InputStream is = conn.getInputStream();
+                        Bitmap bmp = BitmapFactory.decodeStream(is);
+                        is.close();
+                        conn.disconnect();
+                        return bmp;
+                    }
+                    conn.disconnect();
+                } catch (Exception ignored) {}
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Bitmap bmp) {
+                if (bmp != null) {
+                    ivAvatar.setImageBitmap(toCircle(bmp));
+                    ivAvatar.setVisibility(View.VISIBLE);
+                    avatarLetter.setVisibility(View.GONE);
+                }
+            }
+        }.execute();
+    }
+
+    private Bitmap toCircle(Bitmap src) {
+        int sz = Math.min(src.getWidth(), src.getHeight());
+        Bitmap out = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(out);
+        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        BitmapShader shader = new BitmapShader(src, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+        paint.setShader(shader);
+        canvas.drawCircle(sz / 2f, sz / 2f, sz / 2f, paint);
+        return out;
+    }
+
     private void sendMessage() {
         if (jid == null) return;
         String text = editMessage.getText().toString().trim();
@@ -176,7 +235,6 @@ public class ChatActivity extends Activity {
 
         editMessage.setText("");
 
-        // Optimistically show the message right away
         MessageModel opt = new MessageModel(
             "tmp_" + System.currentTimeMillis(),
             true, text, System.currentTimeMillis(), "You"
@@ -228,7 +286,6 @@ public class ChatActivity extends Activity {
                 } else {
                     tvChatEmpty.setVisibility(View.GONE);
                     listMessages.setVisibility(View.VISIBLE);
-                    // Scroll to bottom on first load or when new messages arrive
                     if (shouldScrollToBottom || hadNewMessages) {
                         scrollToBottom();
                     }
@@ -258,12 +315,11 @@ public class ChatActivity extends Activity {
             if (!ok) {
                 Toast.makeText(ChatActivity.this, "Failed to send — check bridge", Toast.LENGTH_SHORT).show();
             }
-            // Reload to get server-confirmed message (replaces the optimistic one)
             loadMessages(true);
         }
     }
 
-    // ── Message list adapter ────────────────────────────────────────────────
+    // ── Message list adapter ────────────────────────────────────────────────────
     private static class MessageAdapter extends BaseAdapter {
         private final Context ctx;
         private final List<MessageModel> items;
@@ -280,7 +336,6 @@ public class ChatActivity extends Activity {
         @Override public Object getItem(int p) { return items.get(p); }
         @Override public long getItemId(int p) { return p; }
 
-        // Two distinct view types so recycler never mixes them
         @Override public int getViewTypeCount() { return 2; }
         @Override public int getItemViewType(int position) {
             return items.get(position).isFromMe() ? 1 : 0;
@@ -293,7 +348,6 @@ public class ChatActivity extends Activity {
                 ? timeFmt.format(new Date(msg.getTimestamp())) : "";
 
             if (msg.isFromMe()) {
-                // ── Outgoing ──
                 ViewHolderOut h;
                 if (convertView == null) {
                     convertView = inflater.inflate(R.layout.item_message_out, parent, false);
@@ -309,7 +363,6 @@ public class ChatActivity extends Activity {
                 h.tvTime.setText(timeStr);
                 h.tvTicks.setText("\u2713\u2713");
             } else {
-                // ── Incoming ──
                 ViewHolderIn h;
                 if (convertView == null) {
                     convertView = inflater.inflate(R.layout.item_message_in, parent, false);

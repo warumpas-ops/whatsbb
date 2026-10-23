@@ -5,7 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -27,11 +34,17 @@ import android.widget.Toast;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends Activity {
     private PreferencesManager prefs;
@@ -51,10 +64,10 @@ public class MainActivity extends Activity {
     private boolean isPaused = false;
     private String currentStatus = "DISCONNECTED";
 
-    // Elegant monochrome avatar tones
+    // Avatar color palette — muted, distinct tones
     private static final int[] AVATAR_COLORS = {
-        0xFF1E1E1E, 0xFF242424, 0xFF2A2A2A, 0xFF2F2F2F,
-        0xFF343434, 0xFF222222, 0xFF2D2D2D, 0xFF1A1A1A
+        0xFF1E2030, 0xFF1E2820, 0xFF2A1E22, 0xFF22201E,
+        0xFF1E2228, 0xFF281E26, 0xFF262020, 0xFF1E2624
     };
 
     @Override
@@ -166,14 +179,14 @@ public class MainActivity extends Activity {
                 }
 
                 List<String> items = new ArrayList<String>();
-                items.add("➕ Enter phone number...");
+                items.add("+ Enter phone number...");
                 for (ContactModel c : contacts) {
-                    items.add(c.getName() + " (" + c.getJid().split("@")[0] + ")");
+                    items.add(c.getName() + "  (" + c.getJid().split("@")[0] + ")");
                 }
 
                 final CharSequence[] charItems = items.toArray(new CharSequence[items.size()]);
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("New Chat");
+                builder.setTitle("New conversation");
                 builder.setItems(charItems, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -193,11 +206,11 @@ public class MainActivity extends Activity {
 
     private void showCustomNumberDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter Phone Number");
-        builder.setMessage("Enter number with country code (e.g. 213775406221):");
+        builder.setTitle("Phone number");
+        builder.setMessage("Enter with country code (e.g. 213775406221):");
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_PHONE);
-        input.setHint("+213775406221");
+        input.setHint("213775406221");
         input.setTextColor(Color.WHITE);
         builder.setView(input);
         builder.setPositiveButton("Open", new DialogInterface.OnClickListener() {
@@ -262,29 +275,29 @@ public class MainActivity extends Activity {
         bannerDotBg.setShape(GradientDrawable.OVAL);
 
         if ("CONNECTED".equals(status)) {
-            dotBg.setColor(0xFF00A884);
+            dotBg.setColor(0xFF4CAF50);
             layoutStatusBanner.setVisibility(View.GONE);
         } else if ("SCAN_QR".equals(status)) {
-            dotBg.setColor(0xFFF0B429);
-            bannerDotBg.setColor(0xFFF0B429);
+            dotBg.setColor(0xFFE5A93C);
+            bannerDotBg.setColor(0xFFE5A93C);
             bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
             tvStatusBanner.setText("Scan QR code to link WhatsApp");
-            btnBannerAction.setText("PAIR");
+            btnBannerAction.setText("[pair]");
         } else if ("CONNECTING".equals(status)) {
-            dotBg.setColor(0xFF3B82F6);
-            bannerDotBg.setColor(0xFF3B82F6);
+            dotBg.setColor(0xFF5B8DEF);
+            bannerDotBg.setColor(0xFF5B8DEF);
             bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
             tvStatusBanner.setText("Connecting to bridge...");
-            btnBannerAction.setText("SETTINGS");
+            btnBannerAction.setText("[settings]");
         } else {
-            dotBg.setColor(0xFFEF4444);
-            bannerDotBg.setColor(0xFFEF4444);
+            dotBg.setColor(0xFFD32F2F);
+            bannerDotBg.setColor(0xFFD32F2F);
             bannerDot.setBackgroundDrawable(bannerDotBg);
             layoutStatusBanner.setVisibility(View.VISIBLE);
-            tvStatusBanner.setText(error != null ? "Bridge unreachable — " + error.split(":")[0] : "Not connected to bridge");
-            btnBannerAction.setText("SETTINGS");
+            tvStatusBanner.setText(error != null ? "Bridge unreachable" : "Not connected to bridge");
+            btnBannerAction.setText("[settings]");
         }
         viewStatusDot.setBackgroundDrawable(dotBg);
     }
@@ -318,12 +331,16 @@ public class MainActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
+    // ── Chat list adapter ──────────────────────────────────────────────────────
     private class ChatAdapter extends BaseAdapter {
         private final Context context;
         private final List<ChatModel> items;
         private final LayoutInflater inflater;
         private final SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm", Locale.getDefault());
         private final SimpleDateFormat dateFmt = new SimpleDateFormat("dd/MM", Locale.getDefault());
+        // In-memory bitmap cache keyed by JID
+        private final Map<String, Bitmap> pfpCache = new HashMap<String, Bitmap>();
+        private final Map<String, Boolean> pfpLoading = new HashMap<String, Boolean>();
 
         ChatAdapter(Context context, List<ChatModel> items) {
             this.context = context;
@@ -342,6 +359,7 @@ public class MainActivity extends Activity {
                 convertView = inflater.inflate(R.layout.item_chat, parent, false);
                 h = new ViewHolder();
                 h.layoutAvatar = (FrameLayout) convertView.findViewById(R.id.layout_avatar);
+                h.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
                 h.tvAvatarLetter = (TextView) convertView.findViewById(R.id.tv_avatar_letter);
                 h.tvName = (TextView) convertView.findViewById(R.id.tv_chat_name);
                 h.tvTime = (TextView) convertView.findViewById(R.id.tv_chat_time);
@@ -353,18 +371,35 @@ public class MainActivity extends Activity {
                 h = (ViewHolder) convertView.getTag();
             }
 
-            ChatModel chat = items.get(position);
+            final ChatModel chat = items.get(position);
+            final String jid = chat.getId();
 
-            // Avatar
+            // Avatar background circle
             String name = chat.getName();
             String letter = (name != null && !name.isEmpty()) ? name.substring(0, 1).toUpperCase(Locale.getDefault()) : "?";
             h.tvAvatarLetter.setText(letter);
-            int colorIdx = Math.abs(chat.getId().hashCode()) % AVATAR_COLORS.length;
+            int colorIdx = Math.abs(jid.hashCode()) % AVATAR_COLORS.length;
             GradientDrawable bg = new GradientDrawable();
             bg.setShape(GradientDrawable.OVAL);
             bg.setColor(AVATAR_COLORS[colorIdx]);
-            bg.setStroke(1, 0xFF383838);
+            bg.setStroke(1, ThemeManager.DIVIDER);
             h.layoutAvatar.setBackgroundDrawable(bg);
+
+            // Profile picture
+            Bitmap cached = pfpCache.get(jid);
+            if (cached != null) {
+                h.ivAvatar.setImageBitmap(toCircle(cached));
+                h.ivAvatar.setVisibility(View.VISIBLE);
+                h.tvAvatarLetter.setVisibility(View.GONE);
+            } else {
+                h.ivAvatar.setVisibility(View.GONE);
+                h.tvAvatarLetter.setVisibility(View.VISIBLE);
+                // Load async only once
+                if (pfpLoading.get(jid) == null) {
+                    pfpLoading.put(jid, true);
+                    loadPfp(jid, h);
+                }
+            }
 
             // Name
             h.tvName.setText(name);
@@ -372,9 +407,7 @@ public class MainActivity extends Activity {
             // Last message
             String preview = chat.getLastMessage();
             h.tvLastMsg.setText(preview != null ? preview : "");
-            if (h.tvPreviewTicks != null) {
-                h.tvPreviewTicks.setVisibility(View.GONE);
-            }
+            if (h.tvPreviewTicks != null) h.tvPreviewTicks.setVisibility(View.GONE);
 
             // Time
             if (chat.getTimestamp() > 0) {
@@ -389,18 +422,68 @@ public class MainActivity extends Activity {
             if (chat.getUnread() > 0) {
                 h.tvBadge.setVisibility(View.VISIBLE);
                 h.tvBadge.setText(chat.getUnread() > 99 ? "99+" : String.valueOf(chat.getUnread()));
-                // Green time for unread chats
-                h.tvTime.setTextColor(0xFF00A884);
+                GradientDrawable badgeBg = new GradientDrawable();
+                badgeBg.setShape(GradientDrawable.OVAL);
+                badgeBg.setColor(0xFFFFFFFF);
+                h.tvBadge.setBackgroundDrawable(badgeBg);
+                h.tvTime.setTextColor(0xFFFFFFFF);
             } else {
                 h.tvBadge.setVisibility(View.GONE);
-                h.tvTime.setTextColor(0xFF667781);
+                h.tvTime.setTextColor(ThemeManager.TEXT_DIM);
             }
 
             return convertView;
         }
 
+        private void loadPfp(final String jid, final ViewHolder holder) {
+            new AsyncTask<Void, Void, Bitmap>() {
+                @Override
+                protected Bitmap doInBackground(Void... p) {
+                    try {
+                        String encodedJid = URLEncoder.encode(jid, "UTF-8");
+                        URL url = new URL(prefs.getServerUrl() + "/api/profile-picture?jid=" + encodedJid);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setConnectTimeout(5000);
+                        conn.setReadTimeout(6000);
+                        conn.setInstanceFollowRedirects(true);
+                        if (conn.getResponseCode() == 200) {
+                            InputStream is = conn.getInputStream();
+                            Bitmap bmp = BitmapFactory.decodeStream(is);
+                            is.close();
+                            conn.disconnect();
+                            return bmp;
+                        }
+                        conn.disconnect();
+                    } catch (Exception ignored) {}
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Bitmap bmp) {
+                    pfpLoading.remove(jid);
+                    if (bmp != null) {
+                        pfpCache.put(jid, bmp);
+                        notifyDataSetChanged();
+                    }
+                }
+            }.execute();
+        }
+
+        /** Crop bitmap to circle */
+        private Bitmap toCircle(Bitmap src) {
+            int sz = Math.min(src.getWidth(), src.getHeight());
+            Bitmap out = Bitmap.createBitmap(sz, sz, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(out);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            BitmapShader shader = new BitmapShader(src, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+            paint.setShader(shader);
+            canvas.drawCircle(sz / 2f, sz / 2f, sz / 2f, paint);
+            return out;
+        }
+
         private class ViewHolder {
             FrameLayout layoutAvatar;
+            ImageView ivAvatar;
             TextView tvAvatarLetter, tvName, tvTime, tvPreviewTicks, tvLastMsg, tvBadge;
         }
     }

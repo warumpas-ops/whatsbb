@@ -336,10 +336,16 @@ async function startWhatsApp() {
       if (!c.id) continue;
       const name = c.name || c.notify || c.verifiedName;
       if (name) contactsMap.set(jidNormalizedUser(c.id), { name });
+      // Populate LID map from contacts.set too
+      if (c.lid) {
+        lidMap.set(c.lid, c.id);
+        if (name) contactsMap.set(c.lid, { name });
+      }
     }
-    // Update existing chat names
+    // Update existing chat names (including LID-addressed chats)
     for (const [jid, chat] of chatsMap.entries()) {
-      const contact = contactsMap.get(jidNormalizedUser(jid));
+      const resolved = normalizeJid(jid);
+      const contact = contactsMap.get(jidNormalizedUser(resolved)) || contactsMap.get(jid);
       if (contact?.name && !isJidGroup(jid)) {
         chat.name = contact.name;
       }
@@ -355,6 +361,15 @@ async function startWhatsApp() {
         contactsMap.set(jidNormalizedUser(c.id), { name });
         const chat = chatsMap.get(c.id);
         if (chat && !isJidGroup(c.id)) chat.name = name;
+      }
+      if (c.lid) {
+        lidMap.set(c.lid, c.id);
+        if (name) {
+          contactsMap.set(c.lid, { name });
+          // Update LID-addressed chat name too
+          const lidChat = chatsMap.get(c.lid);
+          if (lidChat) lidChat.name = name;
+        }
       }
     }
     saveStore();
@@ -594,6 +609,29 @@ app.post('/api/logout', async (req, res) => {
     setTimeout(startWhatsApp, 1200);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── Profile Picture Proxy ────────────────────────────────────────────────────
+app.get('/api/profile-picture', async (req, res) => {
+  const { jid } = req.query;
+  if (!jid) return res.status(400).send('Missing jid');
+  if (connectionStatus !== 'CONNECTED' || !sock) return res.status(503).send('Not connected');
+  try {
+    const url = await sock.profilePictureUrl(jid, 'preview', 5000);
+    // Proxy the image so the APK doesn't need to deal with WhatsApp CDN auth
+    const https = require('https');
+    const http = require('http');
+    const transport = url.startsWith('https') ? https : http;
+    const imgReq = transport.get(url, (imgRes) => {
+      res.setHeader('Content-Type', imgRes.headers['content-type'] || 'image/jpeg');
+      res.setHeader('Cache-Control', 'public, max-age=3600');
+      imgRes.pipe(res);
+    });
+    imgReq.on('error', () => res.status(404).send(''));
+    imgReq.setTimeout(6000, () => { imgReq.abort(); res.status(404).send(''); });
+  } catch {
+    res.status(404).send('');
   }
 });
 

@@ -3,82 +3,86 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/wa_bg">
+    android:background="#0F0F10">
 
-    <!-- Minimalist Header -->
+    <!-- Orbit-style Header -->
     <LinearLayout
         android:id="@+id/layout_header"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="52dp"
         android:orientation="horizontal"
-        android:background="@color/wa_header"
+        android:background="#141416"
         android:gravity="center_vertical"
-        android:paddingLeft="18dp"
-        android:paddingRight="6dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="8dp">
 
+        <!-- App title -->
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Messages"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/wa_text"
-            android:textSize="22sp"
+            android:text="WhatsBB"
+            android:textColor="#F2F2F2"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <!-- Status dot -->
         <View
             android:id="@+id/view_status_dot"
-            android:layout_width="7dp"
-            android:layout_height="7dp"
-            android:layout_marginRight="6dp"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/badge_unread" />
 
-        <!-- Refresh action -->
+        <!-- [refresh] text button -->
         <TextView
             android:id="@+id/btn_refresh"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="18sp"
-            android:text="&#8635;" />
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#808086"
+            android:textSize="12sp"
+            android:text="[refresh]" />
 
-        <!-- Settings action -->
+        <!-- [settings] text button -->
         <TextView
             android:id="@+id/btn_settings"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="44dp"
             android:gravity="center"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="18sp"
-            android:text="&#8942;" />
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="#808086"
+            android:textSize="12sp"
+            android:text="[settings]" />
     </LinearLayout>
 
-    <!-- Hairline Separator -->
+    <!-- Hairline -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/wa_divider" />
+        android:background="#252528" />
 
-    <!-- Offline Banner (subtle) -->
+    <!-- Offline Banner -->
     <LinearLayout
         android:id="@+id/layout_status_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="#141414"
-        android:paddingLeft="18dp"
+        android:background="#141416"
+        android:paddingLeft="16dp"
         android:paddingRight="14dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         android:gravity="center_vertical"
         android:visibility="gone">
 
         <View
             android:id="@+id/banner_dot"
-            android:layout_width="7dp"
-            android:layout_height="7dp"
+            android:layout_width="6dp"
+            android:layout_height="6dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/badge_unread" />
 
@@ -87,21 +91,25 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="13sp" />
+            android:textColor="#808086"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/btn_banner_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
+            android:textColor="#F2F2F2"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:paddingLeft="10dp"
-            android:text="PAIR" />
+            android:text="[pair]" />
     </LinearLayout>
+
+    <!-- Second hairline when banner visible -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#252528" />
 
     <!-- Chat List Frame -->
     <FrameLayout
@@ -113,7 +121,7 @@
             android:id="@+id/list_chats"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/wa_divider"
+            android:divider="#252528"
             android:dividerHeight="1dp"
             android:scrollbars="none" />
 
@@ -122,11 +130,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/wa_text_sub"
-            android:textSize="14sp"
+            android:textColor="#808086"
+            android:textSize="13sp"
             android:lineSpacingExtra="4dp"
-            android:text="No conversations.\nTap + below to start."
+            android:text="No conversations yet.\nTap [+] below to start."
             android:visibility="gone" />
 
         <ProgressBar
@@ -136,25 +143,21 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <!-- Minimalist Floating Action Button -->
-        <FrameLayout
+        <!-- Orbit-style [+] button, bottom right -->
+        <TextView
             android:id="@+id/btn_new_chat"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_marginRight="18dp"
+            android:layout_marginRight="16dp"
             android:layout_marginBottom="18dp"
-            android:background="@drawable/btn_fab">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="26sp"
-                android:fontFamily="sans-serif-light"
-                android:text="&#43;" />
-        </FrameLayout>
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textColor="#F2F2F2"
+            android:textSize="13sp"
+            android:text="[new chat]" />
     </FrameLayout>
 
 </LinearLayout>
