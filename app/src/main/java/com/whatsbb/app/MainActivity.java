@@ -64,10 +64,10 @@ public class MainActivity extends Activity {
     private boolean isPaused = false;
     private String currentStatus = "DISCONNECTED";
 
-    // Avatar color palette — muted, distinct tones
+    // Avatar color palette — distinct muted tones
     private static final int[] AVATAR_COLORS = {
-        0xFF1E2030, 0xFF1E2820, 0xFF2A1E22, 0xFF22201E,
-        0xFF1E2228, 0xFF281E26, 0xFF262020, 0xFF1E2624
+        0xFF1A2744, 0xFF1A2E1A, 0xFF2E1A1A, 0xFF1A2833,
+        0xFF2C1A2E, 0xFF2E2614, 0xFF0F2E2C, 0xFF2B1C0F
     };
 
     @Override

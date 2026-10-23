@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="68dp"
+    android:layout_height="72dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="14dp"
-    android:paddingRight="14dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:background="@drawable/chat_row_selector">
 
-    <!-- Avatar: shows photo if available, letter otherwise -->
+    <!-- Avatar -->
     <FrameLayout
         android:id="@+id/layout_avatar"
-        android:layout_width="44dp"
-        android:layout_height="44dp">
+        android:layout_width="48dp"
+        android:layout_height="48dp">
 
         <ImageView
             android:id="@+id/iv_avatar"
@@ -26,21 +26,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:textColor="#F2F2F2"
-            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:textSize="19sp"
             android:textStyle="bold" />
     </FrameLayout>
 
-    <!-- Details Column -->
+    <!-- Content -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="13dp"
-        android:layout_marginRight="4dp">
+        android:layout_marginLeft="14dp">
 
-        <!-- Name & Time Row -->
+        <!-- Name + Time -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,8 +51,8 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="#F2F2F2"
-                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -62,11 +61,11 @@
                 android:id="@+id/tv_chat_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#606066"
+                android:textColor="#353535"
                 android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- Preview & Unread Row -->
+        <!-- Preview + badge -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -78,7 +77,7 @@
                 android:id="@+id/tv_preview_ticks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#808086"
+                android:textColor="#333333"
                 android:textSize="11sp"
                 android:layout_marginRight="3dp"
                 android:visibility="gone" />
@@ -88,19 +87,16 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textColor="#808086"
-                android:textSize="12sp"
+                android:textColor="#3A3A3A"
+                android:textSize="13sp"
                 android:singleLine="true"
                 android:ellipsize="end" />
 
             <TextView
                 android:id="@+id/tv_unread_badge"
-                android:layout_width="wrap_content"
-                android:layout_height="17dp"
-                android:minWidth="17dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:background="@drawable/badge_unread"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
                 android:gravity="center"
                 android:textColor="#000000"
                 android:textSize="10sp"

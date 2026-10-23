@@ -44,7 +44,7 @@ public class ChatActivity extends Activity {
     private ListView listMessages;
     private TextView tvChatEmpty;
     private EditText editMessage;
-    private TextView btnSend;
+    private FrameLayout btnSend;
     private TextView tvThreadName;
     private TextView tvThreadStatus;
 
@@ -58,8 +58,8 @@ public class ChatActivity extends Activity {
     private int lastMessageCount = 0;
 
     private static final int[] AVATAR_COLORS = {
-        0xFF1E2030, 0xFF1E2820, 0xFF2A1E22, 0xFF22201E,
-        0xFF1E2228, 0xFF281E26, 0xFF262020, 0xFF1E2624
+        0xFF1A2744, 0xFF1A2E1A, 0xFF2E1A1A, 0xFF1A2833,
+        0xFF2C1A2E, 0xFF2E2614, 0xFF0F2E2C, 0xFF2B1C0F
     };
 
     @Override
@@ -79,7 +79,7 @@ public class ChatActivity extends Activity {
         listMessages = (ListView) findViewById(R.id.list_messages);
         tvChatEmpty = (TextView) findViewById(R.id.tv_chat_empty);
         editMessage = (EditText) findViewById(R.id.edit_message);
-        btnSend = (TextView) findViewById(R.id.btn_send);
+        btnSend = (FrameLayout) findViewById(R.id.btn_send);
 
         tvThreadName.setText(chatName);
         if (jid != null && jid.endsWith("@g.us")) {
