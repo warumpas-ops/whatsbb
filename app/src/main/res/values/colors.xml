@@ -1,45 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Minimalist Monochrome Palette -->
-    <color name="wa_bg">#000000</color>
-    <color name="wa_chat_bg">#000000</color>
-    <color name="wa_header">#080808</color>
-    <color name="wa_panel">#0E0E0E</color>
-    <color name="wa_pressed">#181818</color>
-    <color name="wa_divider">#1A1A1A</color>
+    <!-- Official WhatsApp Dark Theme Colors -->
+    <color name="wa_bg">#121B22</color>          <!-- WA dark chat list & activity background -->
+    <color name="wa_chat_bg">#0B141B</color>     <!-- WA dark conversation background -->
+    <color name="wa_header">#1F2C34</color>      <!-- WA dark top app bar -->
+    <color name="wa_surface">#1F2C34</color>     <!-- WA card / tile background -->
+    <color name="wa_panel">#1F2C34</color>
+    <color name="wa_pressed">#2A3942</color>     <!-- WA list item tap / pressed -->
+    <color name="wa_divider">#222D34</color>     <!-- WA hairline separators -->
 
-    <!-- Monochrome Accents -->
-    <color name="wa_teal">#FFFFFF</color>
-    <color name="wa_teal_dark">#D0D0D0</color>
-    <color name="wa_icon_teal">#FFFFFF</color>
-    <color name="wa_green_accent">#FFFFFF</color>
-    <color name="wa_fab">#FFFFFF</color>
-    <color name="wa_fab_pressed">#CCCCCC</color>
+    <!-- WhatsApp Green Accents -->
+    <color name="wa_teal">#00A884</color>        <!-- WA signature green -->
+    <color name="wa_teal_dark">#008069</color>
+    <color name="wa_fab">#00A884</color>
+    <color name="wa_fab_pressed">#008F6F</color>
 
     <!-- Message Bubbles -->
-    <color name="wa_bubble_in">#141414</color>
-    <color name="wa_bubble_out">#242424</color>
+    <color name="wa_bubble_in">#1F2C34</color>   <!-- WA dark incoming bubble -->
+    <color name="wa_bubble_out">#005C4B</color>  <!-- WA dark outgoing green bubble -->
 
     <!-- Typography -->
-    <color name="wa_text">#F5F5F5</color>
-    <color name="wa_text_sub">#8E8E8E</color>
-    <color name="wa_text_meta">#555555</color>
-    <color name="wa_link">#FFFFFF</color>
-    <color name="wa_ticks_blue">#FFFFFF</color>
-    <color name="wa_ticks_gray">#666666</color>
+    <color name="wa_text">#E9EDEF</color>        <!-- WA primary high-contrast text -->
+    <color name="wa_text_sub">#8696A0</color>    <!-- WA secondary / subtitle text -->
+    <color name="wa_text_meta">#8696A0</color>   <!-- WA timestamps / metadata -->
+    <color name="wa_link">#53BDEB</color>
+    <color name="wa_ticks_blue">#53BDEB</color>
 
-    <!-- Badges & Tabs -->
-    <color name="wa_badge">#FFFFFF</color>
-    <color name="wa_tab_active">#FFFFFF</color>
-    <color name="wa_tab_inactive">#555555</color>
+    <!-- Badges & Inputs -->
+    <color name="wa_badge">#00A884</color>
+    <color name="wa_input_pill">#2A3942</color>  <!-- WA dark input pill -->
+    <color name="wa_input_bg">#1F2C34</color>
 
-    <!-- Input Bar -->
-    <color name="wa_input_pill">#121212</color>
-    <color name="wa_input_bg">#181818</color>
-
-    <!-- Minimal Status -->
-    <color name="wa_online">#BBBBBB</color>
-    <color name="wa_yellow">#E5A93C</color>
-    <color name="wa_red">#D32F2F</color>
-    <color name="wa_blue">#888888</color>
+    <!-- Status Accents -->
+    <color name="wa_online">#00A884</color>
+    <color name="wa_yellow">#FFD279</color>
+    <color name="wa_red">#F15C6D</color>
+    <color name="wa_blue">#53BDEB</color>
 </resources>
