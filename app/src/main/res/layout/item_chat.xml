@@ -30,10 +30,10 @@
         android:layout_marginRight="10dp" />
 
     <!-- Red Dot for Unread Messages -->
-    <View
+    <TextView
         android:id="@+id/tv_unread_badge"
-        android:layout_width="7dp"
-        android:layout_height="7dp"
+        android:layout_width="8dp"
+        android:layout_height="8dp"
         android:background="@drawable/red_dot"
         android:visibility="gone" />
 

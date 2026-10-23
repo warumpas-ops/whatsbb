@@ -418,18 +418,16 @@ public class MainActivity extends Activity {
                 h.tvTime.setText("");
             }
 
-            // Unread badge
+            // Red unread dot
             if (chat.getUnread() > 0) {
-                h.tvBadge.setVisibility(View.VISIBLE);
-                h.tvBadge.setText(chat.getUnread() > 99 ? "99+" : String.valueOf(chat.getUnread()));
-                GradientDrawable badgeBg = new GradientDrawable();
-                badgeBg.setShape(GradientDrawable.OVAL);
-                badgeBg.setColor(0xFFFFFFFF);
-                h.tvBadge.setBackgroundDrawable(badgeBg);
-                h.tvTime.setTextColor(0xFFFFFFFF);
+                if (h.tvBadge != null) {
+                    h.tvBadge.setVisibility(View.VISIBLE);
+                    h.tvBadge.setText("");
+                }
             } else {
-                h.tvBadge.setVisibility(View.GONE);
-                h.tvTime.setTextColor(ThemeManager.TEXT_DIM);
+                if (h.tvBadge != null) {
+                    h.tvBadge.setVisibility(View.GONE);
+                }
             }
 
             return convertView;

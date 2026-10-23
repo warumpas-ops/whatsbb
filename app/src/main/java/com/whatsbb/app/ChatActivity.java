@@ -44,7 +44,7 @@ public class ChatActivity extends Activity {
     private ListView listMessages;
     private TextView tvChatEmpty;
     private EditText editMessage;
-    private FrameLayout btnSend;
+    private TextView btnSend;
     private TextView tvThreadName;
     private TextView tvThreadStatus;
 
@@ -79,7 +79,7 @@ public class ChatActivity extends Activity {
         listMessages = (ListView) findViewById(R.id.list_messages);
         tvChatEmpty = (TextView) findViewById(R.id.tv_chat_empty);
         editMessage = (EditText) findViewById(R.id.edit_message);
-        btnSend = (FrameLayout) findViewById(R.id.btn_send);
+        btnSend = (TextView) findViewById(R.id.btn_send);
 
         tvThreadName.setText(chatName);
         if (jid != null && jid.endsWith("@g.us")) {
